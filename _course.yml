@@ -1,0 +1,79 @@
+schedule:
+  - week: 0
+    lecturer: Di
+    topic: "Course information"
+    readings:
+    assessment:
+  - week: 1
+    lecturer: Di
+    topic: "Overview. Why this course? What is EDA?"
+    readings: "[50 Years of Data Science](https://www.tandfonline.com/doi/full/10.1080/10618600.2017.1384734)"
+    assessment: "<ul><li>Reading quizzes due *each week*.</li></ul>"
+  - week: 2
+    lecturer: Di
+    topic: "Learning from history"
+    readings: "[EDA Case Study: Bay area blues](https://vita.had.co.nz/papers/bay-area-blues.pdf)"
+  - week: 3
+    lecturer: Emi
+    topic: "Initial data analysis: Model dependent exploration and how it differs from EDA"
+    readings: "[The initial examination of data](https://www.jstor.org/stable/2981969?seq=1#metadata_info_tab_contents)"
+  - week: 4
+    lecturer: Emi
+    readings: "[Case Study: Behaviours of dairy calves](https://f1000research.com/articles/4-546/v1) & Unwin (2015) Graphical Data Analysis Ch 3-4"
+    topic: "Working with a single variable, making transformations, detecting outliers, using robust statistics"
+  - week: 5
+    lecturer: Di
+    assessment: "Assignment 1 due on Fri 27th Aug 11.55pm"
+    readings: "Wilke (2019) [Ch 7 Visualising distributions](https://clauswilke.com/dataviz/histograms-density-plots.html) & Unwin (2015) Graphical Data Analysis Ch 5"
+    topic: "Bivariate dependencies and relationships, transformations to linearise"
+  - week: 6
+    lecturer: Emi
+    readings: "Unwin (2015) Graphical Data Analysis Ch 10"
+    topic: Making comparisons between groups and strata
+  - week: 7
+    lecturer: Di
+    readings: "Wilke (2019) [Ch 9 Visualising many distributions](https://clauswilke.com/dataviz/boxplots-violins.html) & Unwin (2015) Graphical Data Analysis Ch 6"
+    topic: "Going beyond two variables, exploring high dimensions"
+  - week: 8
+    lecturer: Emi
+    assessment: "Assignment 2 due on Fri 17th Sep 11.55pm"
+    readings: "Cook & Weisberg (1994) An Introduction to Regression Graphics Ch 6 and Cleveland (1993) Visualising Data Ch 4"
+    topic: Sculpting data using models, checking assumptions, co-dependency and performing diagnostics
+  - week: 9
+    lecturer: Di
+    readings: "[Reintroducing tsibble: data tools that melt the clock](https://blog.earo.me/2018/12/20/reintro-tsibble/); Unwin (2015) Graphical Data Analysis Ch 11"
+    topic: Exploring data having a space and time context Part I
+  - week: 10
+    lecturer: Di
+    readings: "[Healy (2018) Data Visualization, Chap 7, Draw maps](https://socviz.co/maps.html#maps); [Perpinan Lamigueiro (2018) Displaying Time Series, Spatial and Space-Time Data with R](https://oscarperpinan.github.io/bookvis/)"
+    topic: Exploring data having a space and time context Part II
+  - week: 11
+    lecturer: Emi
+    readings: "[Wickham et al. (2010) Graphical inference for Infovis](https://vita.had.co.nz/papers/inference-infovis.pdf)"
+    topic: Using computational tools to determine whether what is seen in the data can be assumed to apply more broadly
+  - week: 12
+    lecturer: Emi
+    topic: Extending beyond the data, what can and cannot be inferred more generally, given the data collection
+    assessment: "<ul><li>Group Presentation due on Mon 25th Oct 6.00pm</li><li>Assignment 3 due on Fri 29th Oct 11.55pm</li></ul>"
+team:
+  - name: Prof Di Cook
+    role: lecturer
+    consult: Thu 11.30-12.30pm (Wk 1-2, 5, 7, 9-10)
+  - name: Dr Emi Tanaka (Chief Examiner)
+    role: lecturer
+    consult: Thu 11.30-12.30pm (Wk 3-4, 6, 8, 11-12)
+  - name: Sherry Zhang
+    role: tutor
+    consult: Wed 4.30-6.00pm (Wk 1-12)
+  - name: Patrick (Weihao) Li
+    role: tutor
+    consult: Tue 1.45-2.30pm (Wk 1-12)
+  - name: R Help Desk
+    role: help
+    consult: Tue 6-8pm, Fri 11-12pm (Wk 1-12) by Mitchell O'Hara-Wild
+timetable:
+  - lecture: Mon 2-4pm
+  - tutorial:
+     - Mon 5.30-7.00pm Online
+     - Tue 4.00-5.30pm Online (DNP)
+     - Wed 3.00-4.30pm F2F
