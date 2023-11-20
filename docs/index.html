@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Di Cook" />
+
+
+<title>ETC5521: Exploratory Data Analysis</title>
+
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+<link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="site/styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">ETC5521: Exploratory Data Analysis</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Home
+  </a>
+</li>
+<li>
+  <a href="https://lms.monash.edu/course/view.php?id=163487">
+    <span class="fa fa-archive"></span>
+     
+    Moodle
+  </a>
+</li>
+<li>
+  <a href="https://handbook.monash.edu/2023/units/ETC5521">
+    <span class="fa fa-book"></span>
+     
+    Unit Guide
+  </a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/numbats/eda">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">ETC5521: Exploratory Data Analysis</h1>
+<h4 class="author">Di Cook</h4>
+
+</div>
+
+
+<div id="lecturer" class="section level2">
+<h2>Lecturer</h2>
+<ul>
+<li>Prof Di Cook (Chief Examiner)</li>
+</ul>
+</div>
+<div id="tutors" class="section level2">
+<h2>Tutors</h2>
+<ul>
+<li>Jayani Lakshika</li>
+<li>Thomas Nguyen</li>
+</ul>
+</div>
+<div id="consultations" class="section level2">
+<h2>Consultations</h2>
+<p>All consultations will be in person and zoom. Check Moodle for the
+links.</p>
+<ul>
+<li><strong>Prof Di Cook</strong>: Tue 2:00-3:00 (352 Education Blg, 29
+Ancora Imparo Way, Clayton campus)</li>
+<li><strong>Jayani Lakshika</strong>: Fri 12:30-13:30 Menzies W9.20</li>
+<li><strong>Thomas Nguyen</strong>: Wed 4:00-4:45 Menzies W9.20</li>
+</ul>
+</div>
+<div id="tentative-schedule" class="section level2">
+<h2>Tentative Schedule</h2>
+<ul>
+<li>Lecture: <strong>Thu 08:00-10:00</strong> CL_Col-21.Eng-Lec_E1 (see
+Moodle for zoom link)</li>
+<li>Tutorials: one of the following
+<ul>
+<li><strong>Thu 15:00-16:30</strong> CL_Anc-19.LTB_132</li>
+<li><strong>Thu 16:30-18:00</strong> CL_Anc-19.LTB_132</li>
+</ul></li>
+</ul>
+<table class="table table-striped" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:center;position: sticky; top:0; background-color: #FFFFFF;">
+Week
+</th>
+<th style="text-align:center;position: sticky; top:0; background-color: #FFFFFF;">
+Slides
+</th>
+<th style="text-align:center;position: sticky; top:0; background-color: #FFFFFF;">
+Tutorial
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+Topic
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+Readings
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+Assessments
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;width: 0.5cm; padding-left: 2em;" indentlevel="1">
+00
+</td>
+<td style="text-align:center;width: 1cm; ">
+A:
+<a class="fa fa-link" href="lectures/lecture-00A.html" target="_blank"></a>
+<a class="fab fa-r-project" href="lectures/lecture-00A.Rmd" target="_blank"></a>
+<a class="fa fa-file-pdf" href="lectures/lecture-00A.pdf" target="_blank"></a>
+</td>
+<td style="text-align:center;width: 1cm; ">
+</td>
+<td style="text-align:left;">
+Course information
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;width: 6cm; ">
+</td>
+</tr>
+<tr>
+<td style="text-align:center;width: 0.5cm; padding-left: 2em;" indentlevel="1">
+01 (Jul 24)
+</td>
+<td style="text-align:center;width: 1cm; ">
+A:
+<a class="fa fa-link" href="lectures/lecture-01A.html" target="_blank"></a>
+<a class="fab fa-r-project" href="lectures/lecture-01A.Rmd" target="_blank"></a>
+<a class="fa fa-file-pdf" href="lectures/lecture-01A.pdf" target="_blank"></a>
+; B:
+<a class="fa fa-link" href="lectures/lecture-01B.html" target="_blank"></a>
+<a class="fab fa-r-project" href="lectures/lecture-01B.Rmd" target="_blank"></a>
+<a class="fa fa-file-pdf" href="lectures/lecture-01B.pdf" target="_blank"></a>
+</td>
+<td style="text-align:center;width: 1cm; ">
+<a class="fa fa-tasks" href="tutorials/tutorial-01.html" target="_blank"></a>
+<a class="fa fa-wrench" href="tutorials/tutorial-01.qmd" target="_blank"></a>
+<a class="fa fa-lightbulb" href="tutorials/tutorial-01sol.html" target="_blank"></a>
+</td>
+<td style="text-align:left;">
+Overview. Why this course? What is EDA?
+</td>
+<td style="text-align:left;">
+<a
+href="https://journal.r-project.org/archive/2019/RJ-2019-033/RJ-2019-033.pdf">The
+Landscape of R Packages for Automated Exploratory Data Analysis</a>
+</td>
+<td style="text-align:left;width: 6cm; ">
+Tutorial preparation quizzes due <em>each week</em>.
+</td>
+</tr>
+<tr>
+<td style="text-align:center;width: 0.5cm; padding-left: 2em;" indentlevel="1">
+02 (Jul 31)
+</td>
+<td style="text-align:center;width: 1cm; ">
+A:
+<a class="fa fa-link" href="lectures/lecture-02A.html" target="_blank"></a>
+<a class="fab fa-r-project" href="lectures/lecture-02A.Rmd" target="_blank"></a>
+<a class="fa fa-file-pdf" href="lectures/lecture-02A.pdf" target="_blank"></a>
+; B:
+<a class="fa fa-link" href="lectures/lecture-02B.html" target="_blank"></a>
+<a class="fab fa-r-project" href="lectures/lecture-02B.Rmd" target="_blank"></a>
+<a class="fa fa-file-pdf" href="lectures/lecture-02B.pdf" target="_blank"></a>
+</td>
+<td style="text-align:center;width: 1cm; ">
+<a class="fa fa-tasks" href="tutorials/tutorial-02.html" target="_blank"></a>
+<a class="fa fa-wrench" href="tutorials/tutorial-02.qmd" target="_blank"></a>
+<a class="fa fa-lightbulb" href="tutorials/tutorial-02sol.html" target="_blank"></a>
+</td>
+<td style="text-align:left;">
+Learning from history
+</td>
+<td style="text-align:left;">
+<a href="https://vita.had.co.nz/papers/bay-area-blues.pdf">EDA Case
+Study: Bay area blues</a>
+</td>
+<td style="text-align:left;width: 6cm; ">
+</td>
+</tr>
+<tr>
+<td style="text-align:center;width: 0.5cm; padding-left: 2em;" indentlevel="1">
+03 (Aug 7)
+</td>
+<td style="text-align:center;width: 1cm; ">
+A:
+<a class="fa fa-link" href="lectures/lecture-03A.html" target="_blank"></a>
+<a class="fab fa-r-project" href="lectures/lecture-03A.Rmd" target="_blank"></a>
+<a class="fa fa-file-pdf" href="lectures/lecture-03A.pdf" target="_blank"></a>
+; B:
+<a class="fa fa-link" href="lectures/lecture-03B.html" target="_blank"></a>
+<a class="fab fa-r-project" href="lectures/lecture-03B.Rmd" target="_blank"></a>
+<a class="fa fa-file-pdf" href="lectures/lecture-03B.pdf" target="_blank"></a>
+</td>
+<td style="text-align:center;width: 1cm; ">
+<a class="fa fa-tasks" href="tutorials/tutorial-03.html" target="_blank"></a>
+<a class="fa fa-wrench" href="tutorials/tutorial-03.qmd" target="_blank"></a>
+<a class="fa fa-lightbulb" href="tutorials/tutorial-03sol.html" target="_blank"></a>
+</td>
+<td style="text-align:left;">
+Initial data analysis and model diagnostics: Model dependent exploration
+and how it differs from EDA
+</td>
+<td style="text-align:left;">
+<a
+href="https://www.jstor.org/stable/2981969?seq=1#metadata_info_tab_contents">The
+initial examination of data</a>
+</td>
+<td style="text-align:left;width: 6cm; ">
+</td>
+</tr>
+<tr>
+<td style="text-align:center;width: 0.5cm; padding-left: 2em;" indentlevel="1">
+04 (Aug 14)
+</td>
+<td style="text-align:center;width: 1cm; ">
+A:
+<a class="fa fa-link" href="lectures/lecture-04A.html" target="_blank"></a>
+<a class="fab fa-r-project" href="lectures/lecture-04A.Rmd" target="_blank"></a>
+<a class="fa fa-file-pdf" href="lectures/lecture-04A.pdf" target="_blank"></a>
+; B:
+<a class="fa fa-link" href="lectures/lecture-04B.html" target="_blank"></a>
+<a class="fab fa-r-project" href="lectures/lecture-04B.Rmd" target="_blank"></a>
+<a class="fa fa-file-pdf" href="lectures/lecture-04B.pdf" target="_blank"></a>
+</td>
+<td style="text-align:center;width: 1cm; ">
+<a class="fa fa-tasks" href="tutorials/tutorial-04.html" target="_blank"></a>
+<a class="fa fa-wrench" href="tutorials/tutorial-04.qmd" target="_blank"></a>
+<a class="fa fa-lightbulb" href="tutorials/tutorial-04sol.html" target="_blank"></a>
+</td>
+<td style="text-align:left;">
+Using computational tools to determine whether what is seen in the data
+can be assumed to apply more broadly
+</td>
+<td style="text-align:left;">
+<a href="https://vita.had.co.nz/papers/inference-infovis.pdf">Wickham et
+al. (2010) Graphical inference for Infovis</a>
+</td>
+<td style="text-align:left;width: 6cm; ">
+</td>
+</tr>
+<tr>
+<td style="text-align:center;width: 0.5cm; padding-left: 2em;" indentlevel="1">
+05 (Aug 21)
+</td>
+<td style="text-align:center;width: 1cm; ">
+A:
+<a class="fa fa-link" href="lectures/lecture-05A.html" target="_blank"></a>
+<a class="fab fa-r-project" href="lectures/lecture-05A.Rmd" target="_blank"></a>
+<a class="fa fa-file-pdf" href="lectures/lecture-05A.pdf" target="_blank"></a>
+; B:
+<a class="fa fa-link" href="lectures/lecture-05B.html" target="_blank"></a>
+<a class="fab fa-r-project" href="lectures/lecture-05B.Rmd" target="_blank"></a>
+<a class="fa fa-file-pdf" href="lectures/lecture-05B.pdf" target="_blank"></a>
+</td>
+<td style="text-align:center;width: 1cm; ">
+<a class="fa fa-tasks" href="tutorials/tutorial-05.html" target="_blank"></a>
+<a class="fa fa-wrench" href="tutorials/tutorial-05.qmd" target="_blank"></a>
+<a class="fa fa-lightbulb" href="tutorials/tutorial-05sol.html" target="_blank"></a>
+</td>
+<td style="text-align:left;">
+Working with a single variable, making transformations, detecting
+outliers, using robust statistics
+</td>
+<td style="text-align:left;">
+Unwin (2015) Graphical Data Analysis Ch 3-4; <a
+href="https://clauswilke.com/dataviz/histograms-density-plots.html">Wilke
+(2019) Ch 6 Visualizing Amounts; Ch 7 Visualizing distributions</a>;
+</td>
+<td style="text-align:left;width: 6cm; ">
+Assignment 1 (individual) due on Fri Aug 25, 4:30pm
+</td>
+</tr>
+<tr>
+<td style="text-align:center;width: 0.5cm; padding-left: 2em;" indentlevel="1">
+06 (Aug 28)
+</td>
+<td style="text-align:center;width: 1cm; ">
+A:
+<a class="fa fa-link" href="lectures/lecture-06A.html" target="_blank"></a>
+<a class="fab fa-r-project" href="lectures/lecture-06A.Rmd" target="_blank"></a>
+<a class="fa fa-file-pdf" href="lectures/lecture-06A.pdf" target="_blank"></a>
+; B:
+<a class="fa fa-link" href="lectures/lecture-06B.html" target="_blank"></a>
+<a class="fab fa-r-project" href="lectures/lecture-06B.Rmd" target="_blank"></a>
+<a class="fa fa-file-pdf" href="lectures/lecture-06B.pdf" target="_blank"></a>
+</td>
+<td style="text-align:center;width: 1cm; ">
+<a class="fa fa-tasks" href="tutorials/tutorial-06.html" target="_blank"></a>
+<a class="fa fa-wrench" href="tutorials/tutorial-06.qmd" target="_blank"></a>
+<a class="fa fa-lightbulb" href="tutorials/tutorial-06sol.html" target="_blank"></a>
+</td>
+<td style="text-align:left;">
+Bivariate dependencies and relationships, transformations to linearise
+</td>
+<td style="text-align:left;">
+Unwin (2015) Graphical Data Analysis Ch 5; Wilke (2019) <a
+href="https://clauswilke.com/dataviz/visualizing-associations.html">Ch
+12 Visualising associations</a>
+</td>
+<td style="text-align:left;width: 6cm; ">
+</td>
+</tr>
+<tr>
+<td style="text-align:center;width: 0.5cm; padding-left: 2em;" indentlevel="1">
+07 (Sep 4)
+</td>
+<td style="text-align:center;width: 1cm; ">
+A:
+<a class="fa fa-link" href="lectures/lecture-07A.html" target="_blank"></a>
+<a class="fab fa-r-project" href="lectures/lecture-07A.Rmd" target="_blank"></a>
+<a class="fa fa-file-pdf" href="lectures/lecture-07A.pdf" target="_blank"></a>
+; B:
+<a class="fa fa-link" href="lectures/lecture-07B.html" target="_blank"></a>
+<a class="fab fa-r-project" href="lectures/lecture-07B.Rmd" target="_blank"></a>
+<a class="fa fa-file-pdf" href="lectures/lecture-07B.pdf" target="_blank"></a>
+</td>
+<td style="text-align:center;width: 1cm; ">
+<a class="fa fa-tasks" href="tutorials/tutorial-07.html" target="_blank"></a>
+<a class="fa fa-wrench" href="tutorials/tutorial-07.qmd" target="_blank"></a>
+<a class="fa fa-lightbulb" href="tutorials/tutorial-07sol.html" target="_blank"></a>
+</td>
+<td style="text-align:left;">
+Making comparisons between groups and strata
+</td>
+<td style="text-align:left;">
+Wilke (2019) <a href="https://clauswilke.com/dataviz">Ch 9, 10.2-4,
+11.2</a>; Unwin (2015) Graphical Data Analysis Ch 10
+</td>
+<td style="text-align:left;width: 6cm; ">
+</td>
+</tr>
+<tr>
+<td style="text-align:center;width: 0.5cm; padding-left: 2em;" indentlevel="1">
+08 (Sep 11)
+</td>
+<td style="text-align:center;width: 1cm; ">
+A:
+<a class="fa fa-link" href="lectures/lecture-08A.html" target="_blank"></a>
+<a class="fab fa-r-project" href="lectures/lecture-08A.Rmd" target="_blank"></a>
+<a class="fa fa-file-pdf" href="lectures/lecture-08A.pdf" target="_blank"></a>
+; B:
+<a class="fa fa-link" href="lectures/lecture-08B.html" target="_blank"></a>
+<a class="fab fa-r-project" href="lectures/lecture-08B.Rmd" target="_blank"></a>
+<a class="fa fa-file-pdf" href="lectures/lecture-08B.pdf" target="_blank"></a>
+</td>
+<td style="text-align:center;width: 1cm; ">
+<a class="fa fa-tasks" href="tutorials/tutorial-08.html" target="_blank"></a>
+<a class="fa fa-wrench" href="tutorials/tutorial-08.qmd" target="_blank"></a>
+<a class="fa fa-lightbulb" href="tutorials/tutorial-08sol.html" target="_blank"></a>
+</td>
+<td style="text-align:left;">
+Going beyond two variables, exploring high dimensions
+</td>
+<td style="text-align:left;">
+Unwin (2015) Graphical Data Analysis Ch 6; <a
+href="https://dicook.github.io/mulgar_book/1-intro.html">Cook and Laa
+(2023) Interactively exploring high-dimensional data and models in R
+Chapter 1</a>
+</td>
+<td style="text-align:left;width: 6cm; ">
+Assignment 2 (individual) due on Fri Sep 15, 4:30pm
+</td>
+</tr>
+<tr>
+<td style="text-align:center;width: 0.5cm; padding-left: 2em;" indentlevel="1">
+09 (Sep 18)
+</td>
+<td style="text-align:center;width: 1cm; ">
+A:
+<a class="fa fa-link" href="lectures/lecture-09A.html" target="_blank"></a>
+<a class="fab fa-r-project" href="lectures/lecture-09A.Rmd" target="_blank"></a>
+<a class="fa fa-file-pdf" href="lectures/lecture-09A.pdf" target="_blank"></a>
+; B:
+<a class="fa fa-link" href="lectures/lecture-09B.html" target="_blank"></a>
+<a class="fab fa-r-project" href="lectures/lecture-09B.Rmd" target="_blank"></a>
+<a class="fa fa-file-pdf" href="lectures/lecture-09B.pdf" target="_blank"></a>
+</td>
+<td style="text-align:center;width: 1cm; ">
+<a class="fa fa-tasks" href="tutorials/tutorial-09.html" target="_blank"></a>
+<a class="fa fa-wrench" href="tutorials/tutorial-09.qmd" target="_blank"></a>
+<a class="fa fa-lightbulb" href="tutorials/tutorial-09sol.html" target="_blank"></a>
+</td>
+<td style="text-align:left;">
+Exploring data having a space and time context Part I
+</td>
+<td style="text-align:left;">
+<a href="https://blog.earo.me/2018/12/20/reintro-tsibble/">Reintroducing
+tsibble: data tools that melt the clock</a>; <a
+href="https://journal.r-project.org/articles/RJ-2022-023/">brolgar: An R
+package to BRowse Over Longitudinal Data Graphically and Analytically in
+R</a>; <a
+href="https://posit.co/resources/videos/making-better-spaghetti-plots-exploring-the-individuals-in-longitudinal-data-with-the-brolgar-pac/">Listen
+to Nick talking about longitudinal data</a>; Unwin (2015) Graphical Data
+Analysis Ch 11
+</td>
+<td style="text-align:left;width: 6cm; ">
+</td>
+</tr>
+<tr grouplength="2">
+<td colspan="6" style="background-color: #d9e1e8;">
+<strong>Mid-semester Break (1 week) - no lectures or tutorials</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:center;width: 0.5cm; padding-left: 2em;" indentlevel="1">
+10 (Oct 2)
+</td>
+<td style="text-align:center;width: 1cm; ">
+A:
+<a class="fa fa-link" href="lectures/lecture-10A.html" target="_blank"></a>
+<a class="fab fa-r-project" href="lectures/lecture-10A.Rmd" target="_blank"></a>
+<a class="fa fa-file-pdf" href="lectures/lecture-10A.pdf" target="_blank"></a>
+; B:
+<a class="fa fa-link" href="lectures/lecture-10B.html" target="_blank"></a>
+<a class="fab fa-r-project" href="lectures/lecture-10B.Rmd" target="_blank"></a>
+<a class="fa fa-file-pdf" href="lectures/lecture-10B.pdf" target="_blank"></a>
+</td>
+<td style="text-align:center;width: 1cm; ">
+<a class="fa fa-tasks" href="tutorials/tutorial-10.html" target="_blank"></a>
+<a class="fa fa-wrench" href="tutorials/tutorial-10.qmd" target="_blank"></a>
+<a class="fa fa-lightbulb" href="tutorials/tutorial-10sol.html" target="_blank"></a>
+</td>
+<td style="text-align:left;">
+Exploring data having a space and time context Part II
+</td>
+<td style="text-align:left;">
+<a
+href="https://www.paulamoraga.com/book-geospatial/sec-spatialdataandCRS.html">Moraga
+(2019) Spatial data and R packages for mapping</a>; <a
+href="https://huizezhang-sherry.github.io/cubble/">cubble: A Vector
+Spatio-Temporal Data Structure for Data Analysis</a>; <a
+href="https://huizezhangsh.netlify.app/blogs/2022-05-21-ggplot-sf/">Making
+maps plot faster</a> <a
+href="https://andyteucher.ca/rmapshaper/">Simplify spatial polygons</a>;
+<a href="https://r-spatial.github.io/sf/">sf: Simple Features for R</a>
+</td>
+<td style="text-align:left;width: 6cm; ">
+Assignment 3 (part 1) due on Fri Oct 6, 4:30pm
+</td>
+</tr>
+<tr>
+<td style="text-align:center;width: 0.5cm; padding-left: 2em;" indentlevel="1">
+11 (Oct 9)
+</td>
+<td style="text-align:center;width: 1cm; ">
+A:
+<a class="fa fa-link" href="lectures/lecture-11A.html" target="_blank"></a>
+<a class="fab fa-r-project" href="lectures/lecture-11A.Rmd" target="_blank"></a>
+<a class="fa fa-file-pdf" href="lectures/lecture-11A.pdf" target="_blank"></a>
+; B:
+<a class="fa fa-link" href="lectures/lecture-11B.html" target="_blank"></a>
+<a class="fab fa-r-project" href="lectures/lecture-11B.Rmd" target="_blank"></a>
+<a class="fa fa-file-pdf" href="lectures/lecture-11B.pdf" target="_blank"></a>
+</td>
+<td style="text-align:center;width: 1cm; ">
+<a class="fa fa-tasks" href="tutorials/tutorial-11.html" target="_blank"></a>
+<a class="fa fa-wrench" href="tutorials/tutorial-11.qmd" target="_blank"></a>
+<a class="fa fa-lightbulb" href="tutorials/tutorial-11sol.html" target="_blank"></a>
+</td>
+<td style="text-align:left;">
+Sculpting data using models, checking assumptions, co-dependency and
+performing diagnostics
+</td>
+<td style="text-align:left;">
+Cook &amp; Weisberg (1994) An Introduction to Regression Graphics Ch 6;
+Cleveland (1993) Visualising Data Ch 4; ; <a
+href="http://www.dicook.org/2019/09/13/touring-to-check-for-multicollinearity/">How
+to use a tour to check if your model suffers from multicollinearity</a>
+</td>
+<td style="text-align:left;width: 6cm; ">
+</td>
+</tr>
+<tr>
+<td style="text-align:center;width: 0.5cm; ">
+12 (Oct 16)
+</td>
+<td style="text-align:center;width: 1cm; ">
+</td>
+<td style="text-align:center;width: 1cm; ">
+</td>
+<td style="text-align:left;">
+Extending beyond the data, what can and cannot be inferred more
+generally, given the data collection
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;width: 6cm; ">
+Assignment 3 (part 2) due on Fri Oct 27, 4:30pm
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="expectations" class="section level2">
+<h2>Expectations</h2>
+<ul>
+<li>The <strong>moodle discussion forum</strong> is appropriate for
+<strong>ALL questions</strong> related to the course. Only queries about
+a personal issue, a confidential or an administrative matter, will be
+addressed by direct email to <a
+href="mailto:ETC5521.Clayton-x@monash.edu"
+class="email">ETC5521.Clayton-x@monash.edu</a>.</li>
+<li>Email should not to be sent to individual instructor (lecture or
+tutor) addresses for any reason, and will not receive a response.</li>
+<li>Lectures will be recorded, and you are expected to have either
+attended the lecture, or watched the recordings fully, prior to the
+tutorial.</li>
+<li>Tutorials are not recorded, and attendance is required.</li>
+<li>It is your responsibility to catch up with any missed material,
+learn about due dates for material to be turned in, and getting assigned
+to a group for team work, as necessary.</li>
+<li>Bring your own laptop to the computer labs. If you need a laptop it
+is possible to get a <a
+href="https://msa.monash.edu/services/msa-library/borrowing/gadgets/">loan
+from the Monash library</a> and Monash can help by <a
+href="https://www.monash.edu/esolutions/students/bring-your-own-device-byod">providing
+discounts</a> or scholarships to purchase your own equipment.</li>
+<li>The computer software <a href="https://cran.r-project.org">R</a> and
+the <a href="https://posit.co/products/open-source/rstudio/">RStudio
+IDE</a> will be used for the unit, with reports produced using <a
+href="https://rmarkdown.rstudio.com">Rmarkdown</a> or <a
+href="https://quarto.org">quarto</a>. A good working knowledge of <a
+href="https://git-scm.com">git</a> and <a
+href="https://github.com">GitHub</a> is assumed.</li>
+<li>We strongly encourage that all of your work is stored in your GitHub
+account, in a repo created for this unit. This will ensure that you have
+access if you need to borrow a laptop, or if your own laptop crashes.
+The class assignments will be done using Github classroom to enable
+collaborative work.</li>
+<li>Working collaboratively is designed to be enrich your learning, but
+it can be challenging. We encourage you to read <a
+href="https://www.monash.edu/learnhq/resources/collaborate-with-others">Monash’s
+guide</a> before starting your first group assignment.</li>
+<li>Students are encouraged to use Generative AI, but it needs to be <a
+href="https://www.monash.edu/learnhq/build-digital-capabilities/create-online/acknowledging-the-use-of-generative-artificial-intelligence">acknowledged
+following the Monash guide</a>. The full script of the conversation and
+responses needs to be included as an Appendix on your submitted
+assessment.</li>
+</ul>
+</div>
+<div id="learning-outcomes" class="section level2">
+<h2>Learning outcomes</h2>
+<p>On successful completion of this unit, you should be able to:</p>
+<ol style="list-style-type: decimal">
+<li><p>learn to use modern data exploration tools with real data to
+uncover interesting structure and unusual observations</p></li>
+<li><p>understand how to map out appropriate analyses, and to define
+what we would expect to see in the data</p></li>
+<li><p>be able to compute null samples in order to test apparent
+patterns, and to interpret the results of visual inference</p></li>
+<li><p>critically assess the strength and adequacy of a data
+analysis.</p></li>
+</ol>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

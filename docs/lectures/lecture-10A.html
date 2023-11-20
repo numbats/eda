@@ -1,0 +1,1680 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>ETC5521: Exploratory Data Analysis</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Di Cook" />
+    <script src="lib/header-attrs-2.22/header-attrs.js"></script>
+    <link href="lib/remark-css-0.0.1/ninjutsu.css" rel="stylesheet" />
+    <link href="lib/font-awesome-animation-1.0/font-awesome-animation-emi.css" rel="stylesheet" />
+    <script src="lib/fontawesome-5.0.13/js/fontawesome-all.min.js"></script>
+    <script src="assets/panelset-modified.js"></script>
+
+    <!--
+    <script defer src="assets/all.min.js"></script>
+
+    Need below to enable css contents
+
+    <script>
+      window.FontAwesomeConfig = {
+        searchPseudoElements: true
+      }
+    </script>
+
+    -->
+    <link rel="stylesheet" href="assets/font-awesome-all.css" type="text/css" />
+    <link rel="stylesheet" href="assets/tachyons-addon.css" type="text/css" />
+    <link rel="stylesheet" href="assets/animate.css" type="text/css" />
+    <link rel="stylesheet" href="assets/boxes.css" type="text/css" />
+    <link rel="stylesheet" href="assets/table.css" type="text/css" />
+    <link rel="stylesheet" href="assets/styles.css" type="text/css" />
+    <link rel="stylesheet" href="assets/monash-brand.css" type="text/css" />
+    <link rel="stylesheet" href="assets/monash-fonts.css" type="text/css" />
+    <link rel="stylesheet" href="assets/slide-types.css" type="text/css" />
+    <link rel="stylesheet" href="assets/panelset-modified.css" type="text/css" />
+    <link rel="stylesheet" href="assets/scroll.css" type="text/css" />
+    <link rel="stylesheet" href="assets/datatables.css" type="text/css" />
+    <link rel="stylesheet" href="assets/di5.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+
+
+
+
+
+
+
+
+class: middle center hide-slide-number monash-bg-gray80
+
+
+
+
+
+.info-box.w-50.bg-white[
+These slides are viewed best by Chrome or Firefox and occasionally need to be refreshed if elements did not load properly. See &lt;a href=lecture-10A.pdf&gt;here for the PDF &lt;i class="fas fa-file-pdf"&gt;&lt;/i&gt;&lt;/a&gt;. 
+]
+
+&lt;br&gt;
+
+.white[Press the **right arrow** to progress to the next slide!]
+
+
+
+---
+
+class: title-slide
+count: false
+background-image: url("images/bg-12.png")
+
+# .monash-blue[ETC5521: Exploratory Data Analysis]
+
+&lt;h1 class="monash-blue" style="font-size: 30pt!important;"&gt;&lt;/h1&gt;
+
+&lt;br&gt;
+
+&lt;h2 style="font-weight:900!important;"&gt;Exploring data having a space and time context&lt;/h2&gt;
+
+.bottom_abs.width100[
+
+Lecturer: *Di Cook*
+
+
+
+&lt;i class="fas fa-envelope"&gt;&lt;/i&gt;  ETC5521.Clayton-x@monash.edu
+
+&lt;i class="fas fa-calendar-alt"&gt;&lt;/i&gt; Week 10 - Session 1
+
+&lt;br&gt;
+
+]
+
+
+
+&lt;style type="text/css"&gt;
+.gray80 {
+  color: #505050!important;
+  font-weight: 300;
+}
+.bg-gray80 {
+  background-color: #DCDCDC!important;
+}
+&lt;/style&gt;
+
+---
+background-image: \url(images/week10A/southwestrocks.jpg)
+background-position: 20% 80%
+class: middle center
+
+# .monash-white[You show me continents, I see the islands,]
+
+# .monash-white[You count the centuries, I blink my eyes]
+
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+
+.monash-white[[Björk](https://www.bjork.com)]
+
+---
+
+# Outline
+
+### .monash-orange2[First part]
+
+- Breaking up data by time, and by space
+- Maps of space over time
+- Exploring time over space with glyph maps
+
+&lt;br&gt;
+
+### .monash-orange2[Second part]
+
+- Capturing spatial trend
+- Bending the choropleth map 
+- A flash back to the 1970s: Tukey's median polish 
+
+
+---
+# .orange[Case study] .bg-orange.circle[1] Temperature change in Americas
+
+.panelset[
+.panel[.panel-name[data]
+6 years of monthly measurements of a 24x24 spatial grid from Central America collated by Paul Murrell, U. Auckland.
+
+.s400[
+<div id="dockjjtazb" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#dockjjtazb table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#dockjjtazb thead, #dockjjtazb tbody, #dockjjtazb tfoot, #dockjjtazb tr, #dockjjtazb td, #dockjjtazb th {
+  border-style: none;
+}
+
+#dockjjtazb p {
+  margin: 0;
+  padding: 0;
+}
+
+#dockjjtazb .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#dockjjtazb .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#dockjjtazb .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#dockjjtazb .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#dockjjtazb .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#dockjjtazb .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#dockjjtazb .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#dockjjtazb .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#dockjjtazb .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#dockjjtazb .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#dockjjtazb .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#dockjjtazb .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#dockjjtazb .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#dockjjtazb .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#dockjjtazb .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#dockjjtazb .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#dockjjtazb .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#dockjjtazb .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#dockjjtazb .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#dockjjtazb .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#dockjjtazb .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#dockjjtazb .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#dockjjtazb .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#dockjjtazb .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#dockjjtazb .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#dockjjtazb .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#dockjjtazb .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#dockjjtazb .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#dockjjtazb .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#dockjjtazb .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#dockjjtazb .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#dockjjtazb .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#dockjjtazb .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#dockjjtazb .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#dockjjtazb .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#dockjjtazb .gt_left {
+  text-align: left;
+}
+
+#dockjjtazb .gt_center {
+  text-align: center;
+}
+
+#dockjjtazb .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#dockjjtazb .gt_font_normal {
+  font-weight: normal;
+}
+
+#dockjjtazb .gt_font_bold {
+  font-weight: bold;
+}
+
+#dockjjtazb .gt_font_italic {
+  font-style: italic;
+}
+
+#dockjjtazb .gt_super {
+  font-size: 65%;
+}
+
+#dockjjtazb .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#dockjjtazb .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#dockjjtazb .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#dockjjtazb .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#dockjjtazb .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#dockjjtazb .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#dockjjtazb .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+  <thead>
+    
+    <tr class="gt_col_headings">
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="time">time</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="y">y</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="x">x</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="lat">lat</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="long">long</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="date">date</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="cloudhigh">cloudhigh</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="cloudlow">cloudlow</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="cloudmid">cloudmid</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="ozone">ozone</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="pressure">pressure</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="surftemp">surftemp</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="temperature">temperature</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="id">id</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="day">day</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="month">month</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="year">year</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="time" class="gt_row gt_right">1</td>
+<td headers="y" class="gt_row gt_right">1</td>
+<td headers="x" class="gt_row gt_right">1</td>
+<td headers="lat" class="gt_row gt_right">-21.2</td>
+<td headers="long" class="gt_row gt_right">-113.80000</td>
+<td headers="date" class="gt_row gt_right">1995-01-01</td>
+<td headers="cloudhigh" class="gt_row gt_right">0.5</td>
+<td headers="cloudlow" class="gt_row gt_right">31.0</td>
+<td headers="cloudmid" class="gt_row gt_right">2.0</td>
+<td headers="ozone" class="gt_row gt_right">260</td>
+<td headers="pressure" class="gt_row gt_right">1000</td>
+<td headers="surftemp" class="gt_row gt_right">297.4</td>
+<td headers="temperature" class="gt_row gt_right">296.9</td>
+<td headers="id" class="gt_row gt_right">1-1</td>
+<td headers="day" class="gt_row gt_right">0</td>
+<td headers="month" class="gt_row gt_right">1</td>
+<td headers="year" class="gt_row gt_right">1995</td></tr>
+    <tr><td headers="time" class="gt_row gt_right">1</td>
+<td headers="y" class="gt_row gt_right">1</td>
+<td headers="x" class="gt_row gt_right">2</td>
+<td headers="lat" class="gt_row gt_right">-21.2</td>
+<td headers="long" class="gt_row gt_right">-111.29565</td>
+<td headers="date" class="gt_row gt_right">1995-01-01</td>
+<td headers="cloudhigh" class="gt_row gt_right">1.5</td>
+<td headers="cloudlow" class="gt_row gt_right">31.5</td>
+<td headers="cloudmid" class="gt_row gt_right">2.5</td>
+<td headers="ozone" class="gt_row gt_right">260</td>
+<td headers="pressure" class="gt_row gt_right">1000</td>
+<td headers="surftemp" class="gt_row gt_right">297.4</td>
+<td headers="temperature" class="gt_row gt_right">296.5</td>
+<td headers="id" class="gt_row gt_right">2-1</td>
+<td headers="day" class="gt_row gt_right">0</td>
+<td headers="month" class="gt_row gt_right">1</td>
+<td headers="year" class="gt_row gt_right">1995</td></tr>
+    <tr><td headers="time" class="gt_row gt_right">1</td>
+<td headers="y" class="gt_row gt_right">1</td>
+<td headers="x" class="gt_row gt_right">3</td>
+<td headers="lat" class="gt_row gt_right">-21.2</td>
+<td headers="long" class="gt_row gt_right">-108.79130</td>
+<td headers="date" class="gt_row gt_right">1995-01-01</td>
+<td headers="cloudhigh" class="gt_row gt_right">1.5</td>
+<td headers="cloudlow" class="gt_row gt_right">32.5</td>
+<td headers="cloudmid" class="gt_row gt_right">3.5</td>
+<td headers="ozone" class="gt_row gt_right">260</td>
+<td headers="pressure" class="gt_row gt_right">1000</td>
+<td headers="surftemp" class="gt_row gt_right">297.4</td>
+<td headers="temperature" class="gt_row gt_right">296.0</td>
+<td headers="id" class="gt_row gt_right">3-1</td>
+<td headers="day" class="gt_row gt_right">0</td>
+<td headers="month" class="gt_row gt_right">1</td>
+<td headers="year" class="gt_row gt_right">1995</td></tr>
+    <tr><td headers="time" class="gt_row gt_right">1</td>
+<td headers="y" class="gt_row gt_right">1</td>
+<td headers="x" class="gt_row gt_right">4</td>
+<td headers="lat" class="gt_row gt_right">-21.2</td>
+<td headers="long" class="gt_row gt_right">-106.28696</td>
+<td headers="date" class="gt_row gt_right">1995-01-01</td>
+<td headers="cloudhigh" class="gt_row gt_right">1.0</td>
+<td headers="cloudlow" class="gt_row gt_right">39.0</td>
+<td headers="cloudmid" class="gt_row gt_right">4.0</td>
+<td headers="ozone" class="gt_row gt_right">258</td>
+<td headers="pressure" class="gt_row gt_right">1000</td>
+<td headers="surftemp" class="gt_row gt_right">296.9</td>
+<td headers="temperature" class="gt_row gt_right">296.5</td>
+<td headers="id" class="gt_row gt_right">4-1</td>
+<td headers="day" class="gt_row gt_right">0</td>
+<td headers="month" class="gt_row gt_right">1</td>
+<td headers="year" class="gt_row gt_right">1995</td></tr>
+    <tr><td headers="time" class="gt_row gt_right">1</td>
+<td headers="y" class="gt_row gt_right">1</td>
+<td headers="x" class="gt_row gt_right">5</td>
+<td headers="lat" class="gt_row gt_right">-21.2</td>
+<td headers="long" class="gt_row gt_right">-103.78261</td>
+<td headers="date" class="gt_row gt_right">1995-01-01</td>
+<td headers="cloudhigh" class="gt_row gt_right">0.5</td>
+<td headers="cloudlow" class="gt_row gt_right">48.0</td>
+<td headers="cloudmid" class="gt_row gt_right">4.5</td>
+<td headers="ozone" class="gt_row gt_right">258</td>
+<td headers="pressure" class="gt_row gt_right">1000</td>
+<td headers="surftemp" class="gt_row gt_right">296.5</td>
+<td headers="temperature" class="gt_row gt_right">295.5</td>
+<td headers="id" class="gt_row gt_right">5-1</td>
+<td headers="day" class="gt_row gt_right">0</td>
+<td headers="month" class="gt_row gt_right">1</td>
+<td headers="year" class="gt_row gt_right">1995</td></tr>
+    <tr><td headers="time" class="gt_row gt_right">1</td>
+<td headers="y" class="gt_row gt_right">1</td>
+<td headers="x" class="gt_row gt_right">6</td>
+<td headers="lat" class="gt_row gt_right">-21.2</td>
+<td headers="long" class="gt_row gt_right">-101.27826</td>
+<td headers="date" class="gt_row gt_right">1995-01-01</td>
+<td headers="cloudhigh" class="gt_row gt_right">0.0</td>
+<td headers="cloudlow" class="gt_row gt_right">50.0</td>
+<td headers="cloudmid" class="gt_row gt_right">2.5</td>
+<td headers="ozone" class="gt_row gt_right">258</td>
+<td headers="pressure" class="gt_row gt_right">1000</td>
+<td headers="surftemp" class="gt_row gt_right">296.5</td>
+<td headers="temperature" class="gt_row gt_right">295.0</td>
+<td headers="id" class="gt_row gt_right">6-1</td>
+<td headers="day" class="gt_row gt_right">0</td>
+<td headers="month" class="gt_row gt_right">1</td>
+<td headers="year" class="gt_row gt_right">1995</td></tr>
+    <tr><td headers="time" class="gt_row gt_right">1</td>
+<td headers="y" class="gt_row gt_right">1</td>
+<td headers="x" class="gt_row gt_right">7</td>
+<td headers="lat" class="gt_row gt_right">-21.2</td>
+<td headers="long" class="gt_row gt_right">-98.77391</td>
+<td headers="date" class="gt_row gt_right">1995-01-01</td>
+<td headers="cloudhigh" class="gt_row gt_right">0.0</td>
+<td headers="cloudlow" class="gt_row gt_right">51.0</td>
+<td headers="cloudmid" class="gt_row gt_right">4.5</td>
+<td headers="ozone" class="gt_row gt_right">256</td>
+<td headers="pressure" class="gt_row gt_right">1000</td>
+<td headers="surftemp" class="gt_row gt_right">295.5</td>
+<td headers="temperature" class="gt_row gt_right">295.5</td>
+<td headers="id" class="gt_row gt_right">7-1</td>
+<td headers="day" class="gt_row gt_right">0</td>
+<td headers="month" class="gt_row gt_right">1</td>
+<td headers="year" class="gt_row gt_right">1995</td></tr>
+    <tr><td headers="time" class="gt_row gt_right">1</td>
+<td headers="y" class="gt_row gt_right">1</td>
+<td headers="x" class="gt_row gt_right">8</td>
+<td headers="lat" class="gt_row gt_right">-21.2</td>
+<td headers="long" class="gt_row gt_right">-96.26957</td>
+<td headers="date" class="gt_row gt_right">1995-01-01</td>
+<td headers="cloudhigh" class="gt_row gt_right">0.0</td>
+<td headers="cloudlow" class="gt_row gt_right">52.5</td>
+<td headers="cloudmid" class="gt_row gt_right">5.0</td>
+<td headers="ozone" class="gt_row gt_right">258</td>
+<td headers="pressure" class="gt_row gt_right">1000</td>
+<td headers="surftemp" class="gt_row gt_right">295.5</td>
+<td headers="temperature" class="gt_row gt_right">295.0</td>
+<td headers="id" class="gt_row gt_right">8-1</td>
+<td headers="day" class="gt_row gt_right">0</td>
+<td headers="month" class="gt_row gt_right">1</td>
+<td headers="year" class="gt_row gt_right">1995</td></tr>
+    <tr><td headers="time" class="gt_row gt_right">1</td>
+<td headers="y" class="gt_row gt_right">1</td>
+<td headers="x" class="gt_row gt_right">9</td>
+<td headers="lat" class="gt_row gt_right">-21.2</td>
+<td headers="long" class="gt_row gt_right">-93.76522</td>
+<td headers="date" class="gt_row gt_right">1995-01-01</td>
+<td headers="cloudhigh" class="gt_row gt_right">0.5</td>
+<td headers="cloudlow" class="gt_row gt_right">54.0</td>
+<td headers="cloudmid" class="gt_row gt_right">8.5</td>
+<td headers="ozone" class="gt_row gt_right">256</td>
+<td headers="pressure" class="gt_row gt_right">1000</td>
+<td headers="surftemp" class="gt_row gt_right">295.0</td>
+<td headers="temperature" class="gt_row gt_right">295.0</td>
+<td headers="id" class="gt_row gt_right">9-1</td>
+<td headers="day" class="gt_row gt_right">0</td>
+<td headers="month" class="gt_row gt_right">1</td>
+<td headers="year" class="gt_row gt_right">1995</td></tr>
+    <tr><td headers="time" class="gt_row gt_right">1</td>
+<td headers="y" class="gt_row gt_right">1</td>
+<td headers="x" class="gt_row gt_right">10</td>
+<td headers="lat" class="gt_row gt_right">-21.2</td>
+<td headers="long" class="gt_row gt_right">-91.26087</td>
+<td headers="date" class="gt_row gt_right">1995-01-01</td>
+<td headers="cloudhigh" class="gt_row gt_right">1.0</td>
+<td headers="cloudlow" class="gt_row gt_right">56.0</td>
+<td headers="cloudmid" class="gt_row gt_right">11.5</td>
+<td headers="ozone" class="gt_row gt_right">258</td>
+<td headers="pressure" class="gt_row gt_right">1000</td>
+<td headers="surftemp" class="gt_row gt_right">294.6</td>
+<td headers="temperature" class="gt_row gt_right">294.6</td>
+<td headers="id" class="gt_row gt_right">10-1</td>
+<td headers="day" class="gt_row gt_right">0</td>
+<td headers="month" class="gt_row gt_right">1</td>
+<td headers="year" class="gt_row gt_right">1995</td></tr>
+    <tr><td headers="time" class="gt_row gt_right">1</td>
+<td headers="y" class="gt_row gt_right">1</td>
+<td headers="x" class="gt_row gt_right">11</td>
+<td headers="lat" class="gt_row gt_right">-21.2</td>
+<td headers="long" class="gt_row gt_right">-88.75652</td>
+<td headers="date" class="gt_row gt_right">1995-01-01</td>
+<td headers="cloudhigh" class="gt_row gt_right">1.0</td>
+<td headers="cloudlow" class="gt_row gt_right">56.0</td>
+<td headers="cloudmid" class="gt_row gt_right">11.5</td>
+<td headers="ozone" class="gt_row gt_right">258</td>
+<td headers="pressure" class="gt_row gt_right">1000</td>
+<td headers="surftemp" class="gt_row gt_right">294.6</td>
+<td headers="temperature" class="gt_row gt_right">294.6</td>
+<td headers="id" class="gt_row gt_right">11-1</td>
+<td headers="day" class="gt_row gt_right">0</td>
+<td headers="month" class="gt_row gt_right">1</td>
+<td headers="year" class="gt_row gt_right">1995</td></tr>
+    <tr><td headers="time" class="gt_row gt_right">1</td>
+<td headers="y" class="gt_row gt_right">1</td>
+<td headers="x" class="gt_row gt_right">12</td>
+<td headers="lat" class="gt_row gt_right">-21.2</td>
+<td headers="long" class="gt_row gt_right">-86.25217</td>
+<td headers="date" class="gt_row gt_right">1995-01-01</td>
+<td headers="cloudhigh" class="gt_row gt_right">1.0</td>
+<td headers="cloudlow" class="gt_row gt_right">60.5</td>
+<td headers="cloudmid" class="gt_row gt_right">12.5</td>
+<td headers="ozone" class="gt_row gt_right">254</td>
+<td headers="pressure" class="gt_row gt_right">1000</td>
+<td headers="surftemp" class="gt_row gt_right">294.1</td>
+<td headers="temperature" class="gt_row gt_right">294.6</td>
+<td headers="id" class="gt_row gt_right">12-1</td>
+<td headers="day" class="gt_row gt_right">0</td>
+<td headers="month" class="gt_row gt_right">1</td>
+<td headers="year" class="gt_row gt_right">1995</td></tr>
+    <tr><td headers="time" class="gt_row gt_right">1</td>
+<td headers="y" class="gt_row gt_right">1</td>
+<td headers="x" class="gt_row gt_right">13</td>
+<td headers="lat" class="gt_row gt_right">-21.2</td>
+<td headers="long" class="gt_row gt_right">-83.74783</td>
+<td headers="date" class="gt_row gt_right">1995-01-01</td>
+<td headers="cloudhigh" class="gt_row gt_right">1.5</td>
+<td headers="cloudlow" class="gt_row gt_right">57.0</td>
+<td headers="cloudmid" class="gt_row gt_right">19.5</td>
+<td headers="ozone" class="gt_row gt_right">254</td>
+<td headers="pressure" class="gt_row gt_right">1000</td>
+<td headers="surftemp" class="gt_row gt_right">293.2</td>
+<td headers="temperature" class="gt_row gt_right">294.6</td>
+<td headers="id" class="gt_row gt_right">13-1</td>
+<td headers="day" class="gt_row gt_right">0</td>
+<td headers="month" class="gt_row gt_right">1</td>
+<td headers="year" class="gt_row gt_right">1995</td></tr>
+    <tr><td headers="time" class="gt_row gt_right">1</td>
+<td headers="y" class="gt_row gt_right">1</td>
+<td headers="x" class="gt_row gt_right">14</td>
+<td headers="lat" class="gt_row gt_right">-21.2</td>
+<td headers="long" class="gt_row gt_right">-81.24348</td>
+<td headers="date" class="gt_row gt_right">1995-01-01</td>
+<td headers="cloudhigh" class="gt_row gt_right">2.5</td>
+<td headers="cloudlow" class="gt_row gt_right">57.0</td>
+<td headers="cloudmid" class="gt_row gt_right">20.0</td>
+<td headers="ozone" class="gt_row gt_right">252</td>
+<td headers="pressure" class="gt_row gt_right">1000</td>
+<td headers="surftemp" class="gt_row gt_right">293.2</td>
+<td headers="temperature" class="gt_row gt_right">294.6</td>
+<td headers="id" class="gt_row gt_right">14-1</td>
+<td headers="day" class="gt_row gt_right">0</td>
+<td headers="month" class="gt_row gt_right">1</td>
+<td headers="year" class="gt_row gt_right">1995</td></tr>
+    <tr><td headers="time" class="gt_row gt_right">1</td>
+<td headers="y" class="gt_row gt_right">1</td>
+<td headers="x" class="gt_row gt_right">15</td>
+<td headers="lat" class="gt_row gt_right">-21.2</td>
+<td headers="long" class="gt_row gt_right">-78.73913</td>
+<td headers="date" class="gt_row gt_right">1995-01-01</td>
+<td headers="cloudhigh" class="gt_row gt_right">1.5</td>
+<td headers="cloudlow" class="gt_row gt_right">53.5</td>
+<td headers="cloudmid" class="gt_row gt_right">22.0</td>
+<td headers="ozone" class="gt_row gt_right">254</td>
+<td headers="pressure" class="gt_row gt_right">1000</td>
+<td headers="surftemp" class="gt_row gt_right">293.2</td>
+<td headers="temperature" class="gt_row gt_right">294.6</td>
+<td headers="id" class="gt_row gt_right">15-1</td>
+<td headers="day" class="gt_row gt_right">0</td>
+<td headers="month" class="gt_row gt_right">1</td>
+<td headers="year" class="gt_row gt_right">1995</td></tr>
+    <tr><td headers="time" class="gt_row gt_right">1</td>
+<td headers="y" class="gt_row gt_right">1</td>
+<td headers="x" class="gt_row gt_right">16</td>
+<td headers="lat" class="gt_row gt_right">-21.2</td>
+<td headers="long" class="gt_row gt_right">-76.23478</td>
+<td headers="date" class="gt_row gt_right">1995-01-01</td>
+<td headers="cloudhigh" class="gt_row gt_right">1.0</td>
+<td headers="cloudlow" class="gt_row gt_right">51.5</td>
+<td headers="cloudmid" class="gt_row gt_right">24.5</td>
+<td headers="ozone" class="gt_row gt_right">254</td>
+<td headers="pressure" class="gt_row gt_right">995</td>
+<td headers="surftemp" class="gt_row gt_right">293.6</td>
+<td headers="temperature" class="gt_row gt_right">295.5</td>
+<td headers="id" class="gt_row gt_right">16-1</td>
+<td headers="day" class="gt_row gt_right">0</td>
+<td headers="month" class="gt_row gt_right">1</td>
+<td headers="year" class="gt_row gt_right">1995</td></tr>
+    <tr><td headers="time" class="gt_row gt_right">1</td>
+<td headers="y" class="gt_row gt_right">1</td>
+<td headers="x" class="gt_row gt_right">17</td>
+<td headers="lat" class="gt_row gt_right">-21.2</td>
+<td headers="long" class="gt_row gt_right">-73.73043</td>
+<td headers="date" class="gt_row gt_right">1995-01-01</td>
+<td headers="cloudhigh" class="gt_row gt_right">1.0</td>
+<td headers="cloudlow" class="gt_row gt_right">52.0</td>
+<td headers="cloudmid" class="gt_row gt_right">16.5</td>
+<td headers="ozone" class="gt_row gt_right">256</td>
+<td headers="pressure" class="gt_row gt_right">1000</td>
+<td headers="surftemp" class="gt_row gt_right">295.0</td>
+<td headers="temperature" class="gt_row gt_right">296.0</td>
+<td headers="id" class="gt_row gt_right">17-1</td>
+<td headers="day" class="gt_row gt_right">0</td>
+<td headers="month" class="gt_row gt_right">1</td>
+<td headers="year" class="gt_row gt_right">1995</td></tr>
+    <tr><td headers="time" class="gt_row gt_right">1</td>
+<td headers="y" class="gt_row gt_right">1</td>
+<td headers="x" class="gt_row gt_right">18</td>
+<td headers="lat" class="gt_row gt_right">-21.2</td>
+<td headers="long" class="gt_row gt_right">-71.22609</td>
+<td headers="date" class="gt_row gt_right">1995-01-01</td>
+<td headers="cloudhigh" class="gt_row gt_right">1.5</td>
+<td headers="cloudlow" class="gt_row gt_right">37.5</td>
+<td headers="cloudmid" class="gt_row gt_right">8.0</td>
+<td headers="ozone" class="gt_row gt_right">256</td>
+<td headers="pressure" class="gt_row gt_right">995</td>
+<td headers="surftemp" class="gt_row gt_right">296.9</td>
+<td headers="temperature" class="gt_row gt_right">296.9</td>
+<td headers="id" class="gt_row gt_right">18-1</td>
+<td headers="day" class="gt_row gt_right">0</td>
+<td headers="month" class="gt_row gt_right">1</td>
+<td headers="year" class="gt_row gt_right">1995</td></tr>
+    <tr><td headers="time" class="gt_row gt_right">1</td>
+<td headers="y" class="gt_row gt_right">1</td>
+<td headers="x" class="gt_row gt_right">19</td>
+<td headers="lat" class="gt_row gt_right">-21.2</td>
+<td headers="long" class="gt_row gt_right">-68.72174</td>
+<td headers="date" class="gt_row gt_right">1995-01-01</td>
+<td headers="cloudhigh" class="gt_row gt_right">14.0</td>
+<td headers="cloudlow" class="gt_row gt_right">12.5</td>
+<td headers="cloudmid" class="gt_row gt_right">22.5</td>
+<td headers="ozone" class="gt_row gt_right">258</td>
+<td headers="pressure" class="gt_row gt_right">690</td>
+<td headers="surftemp" class="gt_row gt_right">294.6</td>
+<td headers="temperature" class="gt_row gt_right">288.3</td>
+<td headers="id" class="gt_row gt_right">19-1</td>
+<td headers="day" class="gt_row gt_right">0</td>
+<td headers="month" class="gt_row gt_right">1</td>
+<td headers="year" class="gt_row gt_right">1995</td></tr>
+    <tr><td headers="time" class="gt_row gt_right">1</td>
+<td headers="y" class="gt_row gt_right">1</td>
+<td headers="x" class="gt_row gt_right">20</td>
+<td headers="lat" class="gt_row gt_right">-21.2</td>
+<td headers="long" class="gt_row gt_right">-66.21739</td>
+<td headers="date" class="gt_row gt_right">1995-01-01</td>
+<td headers="cloudhigh" class="gt_row gt_right">29.5</td>
+<td headers="cloudlow" class="gt_row gt_right">7.0</td>
+<td headers="cloudmid" class="gt_row gt_right">30.0</td>
+<td headers="ozone" class="gt_row gt_right">256</td>
+<td headers="pressure" class="gt_row gt_right">680</td>
+<td headers="surftemp" class="gt_row gt_right">292.7</td>
+<td headers="temperature" class="gt_row gt_right">288.8</td>
+<td headers="id" class="gt_row gt_right">20-1</td>
+<td headers="day" class="gt_row gt_right">0</td>
+<td headers="month" class="gt_row gt_right">1</td>
+<td headers="year" class="gt_row gt_right">1995</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+]
+]
+.panel[.panel-name[R]
+
+
+```r
+data(nasa)
+nasa %&gt;% slice_head(n=20) %&gt;% gt()
+```
+
+]
+]
+
+---
+# Spatiotemporal object in R: cubble
+
+.flex[
+.w-45[
+.s300.f5[
+
+```r
+nasa_cb &lt;- as_cubble(as_tibble(nasa), 
+                     key=id, 
+                     index=time, 
+                     coords=c(long, lat))
+nasa_cb
+```
+
+```
+## # cubble:   key: id [576], index: time, nested form
+## # spatial:  [-113.8, -21.2, -56.2, 36.2], Missing CRS!
+## # temporal: time [int], date [dttm], cloudhigh [dbl], cloudlow [dbl], cloudmid [dbl], ozone [int], pressure [int], surftemp [dbl], temperature [dbl], day [dbl], month [dbl], year [dbl]
+##        y     x   lat   long id    ts                
+##    &lt;int&gt; &lt;int&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt; &lt;list&gt;            
+##  1     1     1 -21.2 -114.  1-1   &lt;tibble [72 × 12]&gt;
+##  2     1     2 -21.2 -111.  2-1   &lt;tibble [72 × 12]&gt;
+##  3     1     3 -21.2 -109.  3-1   &lt;tibble [72 × 12]&gt;
+##  4     1     4 -21.2 -106.  4-1   &lt;tibble [72 × 12]&gt;
+##  5     1     5 -21.2 -104.  5-1   &lt;tibble [72 × 12]&gt;
+##  6     1     6 -21.2 -101.  6-1   &lt;tibble [72 × 12]&gt;
+##  7     1     7 -21.2  -98.8 7-1   &lt;tibble [72 × 12]&gt;
+##  8     1     8 -21.2  -96.3 8-1   &lt;tibble [72 × 12]&gt;
+##  9     1     9 -21.2  -93.8 9-1   &lt;tibble [72 × 12]&gt;
+## 10     1    10 -21.2  -91.3 10-1  &lt;tibble [72 × 12]&gt;
+## # ℹ 566 more rows
+```
+]
+
+&lt;img src="https://huizezhang-sherry.github.io/cubble/reference/figures/cubble-operations.png" style="width:500px"&gt;
+
+]
+.w-5[
+.white[space]
+]
+.w-45[
+.s300.f5[
+
+```r
+nasa_cb %&gt;% face_temporal()
+```
+
+```
+## # cubble:   key: id [576], index: time, long form
+## # temporal: 1 -- 72 [1], no gaps
+## # spatial:  y [int], x [int], lat [dbl], long [dbl]
+##    id     time date                cloudhigh cloudlow cloudmid ozone pressure surftemp temperature   day month  year
+##    &lt;chr&gt; &lt;int&gt; &lt;dttm&gt;                  &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt; &lt;int&gt;    &lt;int&gt;    &lt;dbl&gt;       &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1 1-1       1 1995-01-01 00:00:00       0.5     31        2     260     1000     297.        297.     0     1  1995
+##  2 1-1       2 1995-02-01 00:00:00       1       33.5      3     254     1000     299.        298.    31     2  1995
+##  3 1-1       3 1995-03-01 00:00:00       2       25.5      4     254     1000     298.        298.    59     3  1995
+##  4 1-1       4 1995-04-01 00:00:00       4       33.5      5.5   244     1000     299.        299.    90     4  1995
+##  5 1-1       5 1995-05-01 00:00:00       6.5     36.5     14     250     1000     298.        297.   120     5  1995
+##  6 1-1       6 1995-06-01 00:00:00       3.5     36       10     256     1000     295         296.   151     6  1995
+##  7 1-1       7 1995-07-01 00:00:00       1       42.5      6     268     1000     296.        296    181     7  1995
+##  8 1-1       8 1995-08-01 00:00:00       0       45.5      1     276     1000     295.        294.   212     8  1995
+##  9 1-1       9 1995-09-01 00:00:00       0       43.5      3.5   274     1000     295         294.   243     9  1995
+## 10 1-1      10 1995-10-01 00:00:00       1       40        5     282     1000     295         295.   273    10  1995
+## # ℹ 41,462 more rows
+```
+]
+
+&lt;br&gt;&lt;br&gt;
+Like a `tibble` but can .monash-blue2[pivot back and forth between spatial and temporal] components.
+
+]
+]
+
+---
+# .orange[Case study] .bg-orange.circle[1] Temperature change in Americas
+
+.flex[
+.w-50[
+.panelset[
+.panel[.panel-name[plot]
+&lt;img src="images/lecture-10A/spatial-1.png" width="90%" style="display: block; margin: auto;" /&gt;
+]
+.panel[.panel-name[R]
+.f5[
+
+```r
+nasa_cb %&gt;% 
+  ggplot() + 
+  geom_point(aes(x=long, y=lat)) +
+  geom_point(data=filter(nasa_cb, 
+       x==5, y==20),
+       aes(x=long, y=lat),
+       colour="orange", size=4) +
+  geom_point(data=filter(nasa_cb, 
+       x==20, y==2),
+       aes(x=long, y=lat),
+       colour="turquoise", size=4)
+```
+]
+]
+]
+
+]
+
+.w-50[
+.panelset[
+.panel[.panel-name[plot]
+
+&lt;img src="images/lecture-10A/temporal-1.png" width="90%" style="display: block; margin: auto;" /&gt;
+]
+.panel[.panel-name[R]
+.f5[
+
+```r
+nasa_cb_f &lt;- nasa_cb %&gt;% 
+  face_temporal() 
+ggplot(nasa_cb_f) + 
+  geom_line(aes(x=date, 
+                 y=surftemp, 
+                 group=id), alpha=0.2) +
+  geom_line(data=filter(nasa_cb_f , 
+       id=="5-20"),
+       aes(x=date, 
+                 y=surftemp, 
+                 group=id),
+       colour="orange", linewidth=2) +
+  geom_line(data=filter(nasa_cb_f , 
+       id=="20-2"),
+       aes(x=date, 
+                 y=surftemp, 
+                 group=id),
+       colour="turquoise", linewidth=2)
+```
+]
+]
+]
+]
+]
+---
+# Pre-processing of time and space
+
+&lt;br&gt;
+&lt;br&gt;
+
+&lt;center&gt;
+.info-box[Think of .monash-orange2[time] and .monash-orange2[space] as .monash-orange2[ordered categorical variables].] 
+&lt;/center&gt;
+
+&lt;br&gt;
+&lt;br&gt;
+
+- Time may need to be converted to categories. 
+- Spatial variable *might* need to be discretised, or gridded.
+
+&lt;br&gt;
+&lt;br&gt;
+For the nasa data, this is already done. Time is an integer from 1 to 72 (6 years of 12 months), as well as a date, and month and year. Space is a 24x24 grid of longitude and latitude, and also provided as an integer 1 to 24 in both x and y. 
+
+---
+# Slice in time and create a spatial map
+
+.panelset[
+.panel[.panel-name[plot]
+
+&lt;img src="images/lecture-10A/raster-1.png" width="40%" style="display: block; margin: auto;" /&gt;
+]
+.panel[.panel-name[learn]
+
+&lt;br&gt; &lt;br&gt;
+
+In January 2005, temperatures are
+
+- cool over land in the north 
+- cool over the Andes in south america
+- warm on the equator, and along the coastline
+
+There are 12*6=72 maps to make!!
+
+]
+.panel[.panel-name[R]
+.f5[
+
+```r
+# Get the map
+sth_america &lt;- map_data("world") %&gt;%
+  filter(between(long, -115, -53), between(lat, -20.5, 41))
+
+nasa_cb %&gt;% face_temporal() %&gt;%
+  filter(month == 1, year == 1995) %&gt;% 
+  select(id, time, surftemp) %&gt;%
+  unfold(long, lat) %&gt;%
+  ggplot() + 
+  geom_tile(aes(x=long, y=lat, fill=surftemp)) +
+  geom_path(data=sth_america, 
+            aes(x=long, y=lat, group=group), 
+            colour="white", linewidth=1) +
+  scale_fill_viridis_c("", option = "magma") +
+  theme_map() +
+  theme(legend.position = "bottom") +
+  ggtitle("January 1995")
+```
+]
+]
+]
+
+---
+# Explore spatial trend over time
+
+.panelset[
+.panel[.panel-name[plot]
+&lt;img src="images/lecture-10A/space_time-1.png" width="75%" style="display: block; margin: auto;" /&gt;
+]
+.panel[.panel-name[learn]
+
+&lt;br&gt;&lt;br&gt;
+
+- Exploring spatial trend over time is obtained by .monash-blue2[faceting the maps by time].
+
+- Can you see El Nino in 1997? Can you see the summer vs winter in the different hemispheres?
+
+]
+.panel[.panel-name[R]
+.f5[
+
+```r
+nasa_cb %&gt;% face_temporal() %&gt;%
+  select(id, time, month, year, surftemp) %&gt;%
+  unfold(long, lat) %&gt;%
+  ggplot() + 
+  geom_tile(aes(x=long, y=lat, fill=surftemp)) +
+  facet_grid(year~month) +
+  scale_fill_viridis_c("", option = "magma") +
+  theme_map() +
+  theme(legend.position = "bottom") 
+```
+]
+]
+
+]
+---
+# glyphmap: time across space
+
+.flex[
+.w-50[
+.panelset[
+.panel[.panel-name[plot]
+
+&lt;img src="images/lecture-10A/time_space-1.png" width="90%" style="display: block; margin: auto;" /&gt;
+]
+.panel[.panel-name[learn]
+
+&lt;br&gt;&lt;br&gt;
+.monash-blue2[Global scale]: temperature min/max across all spatial locations and time
+
+- Different seasonality at different locations, particularly more north and more south. 
+
+]
+.panel[.panel-name[R]
+
+.f5[
+
+```r
+nasa_cb %&gt;% face_temporal() %&gt;%
+  select(id, time, month, year, surftemp) %&gt;%
+  unfold(long, lat) %&gt;%
+  ggplot() +
+    geom_polygon(data=sth_america, 
+            aes(x=long, y=lat, group=group), 
+            fill="#014221", alpha=0.2, colour="#ffffff") +
+    cubble::geom_glyph_box(data=nasa, 
+                           aes(x_major = long, 
+                               x_minor = day,
+                               y_major = lat, 
+                               y_minor = surftemp), fill=NA) +
+    cubble::geom_glyph(data=nasa, 
+                       aes(x_major = long, 
+                           x_minor = day,
+                           y_major = lat, 
+                           y_minor = surftemp)) +
+    theme_map() 
+```
+]
+]
+]
+
+]
+.w-50[
+.panelset[
+.panel[.panel-name[plot]
+
+&lt;img src="images/lecture-10A/time_space2-1.png" width="90%" style="display: block; margin: auto;" /&gt;
+
+]
+.panel[.panel-name[learn]
+
+&lt;br&gt;&lt;br&gt;
+.monash-blue2[Local scale]: min/max for each spatial location
+
+- El Nino year in equatorial region may be visible.
+- Notice also odd patterns on the west (Andes mountains) of South America.
+
+]
+.panel[.panel-name[R]
+
+.f5[
+
+```r
+nasa_cb %&gt;% face_temporal() %&gt;%
+  select(id, time, month, year, surftemp) %&gt;%
+  unfold(long, lat) %&gt;%
+  ggplot() +
+    geom_polygon(data=sth_america, 
+            aes(x=long, y=lat, group=group), 
+            fill="#014221", alpha=0.2, colour="#ffffff") +
+    cubble::geom_glyph_box(data=nasa, 
+                           aes(x_major = long, 
+                               x_minor = day,
+                               y_major = lat, 
+                               y_minor = surftemp), fill=NA) +
+    cubble::geom_glyph(data=nasa, 
+                       aes(x_major = long, 
+                           x_minor = day,
+                           y_major = lat, 
+                           y_minor = surftemp), 
+                       global_rescale = FALSE) +
+    theme_map() 
+```
+]
+]
+]
+
+]
+]
+
+---
+# glyphmap: time across space
+
+.flex[
+.w-50[
+.panelset[
+.panel[.panel-name[plot]
+
+&lt;img src="images/lecture-10A/unnamed-chunk-12-1.png" width="90%" style="display: block; margin: auto;" /&gt;
+
+]
+.panel[.panel-name[learn]
+
+&lt;br&gt;&lt;br&gt;
+.monash-blue2[Global scale]: temperature min/max across all spatial locations and time
+
+- Different seasonality at different locations, particularly more north and more south. 
+
+
+]
+.panel[.panel-name[R]
+
+.f5[
+
+```r
+nasa_cb %&gt;% face_temporal() %&gt;%
+  select(id, time, month, year, surftemp) %&gt;%
+  unfold(long, lat) %&gt;%
+  ggplot() +
+    geom_polygon(data=sth_america, 
+            aes(x=long, y=lat, group=group), 
+            fill="#014221", alpha=0.2, colour="#ffffff") +
+    cubble::geom_glyph_box(data=nasa, 
+                           aes(x_major = long, 
+                               x_minor = day,
+                               y_major = lat, 
+                               y_minor = surftemp), fill=NA) +
+    cubble::geom_glyph(data=nasa, 
+                       aes(x_major = long, 
+                           x_minor = day,
+                           y_major = lat, 
+                           y_minor = surftemp)) +
+    theme_map() 
+```
+]
+]
+]
+
+]
+.w-50[
+.panelset[
+.panel[.panel-name[plot]
+
+&lt;img src="images/lecture-10A/time_space3-1.png" width="90%" style="display: block; margin: auto;" /&gt;
+]
+.panel[.panel-name[learn]
+
+&lt;br&gt;&lt;br&gt;
+.monash-blue2[Polar coordinates]
+
+- Seasonal pattern may be more visible.
+
+]
+.panel[.panel-name[R]
+
+.f5[
+
+```r
+nasa_cb %&gt;% face_temporal() %&gt;%
+  select(id, time, month, year, surftemp) %&gt;%
+  unfold(long, lat) %&gt;%
+  ggplot() +
+    geom_polygon(data=sth_america, 
+            aes(x=long, y=lat, group=group), 
+            fill="#014221", alpha=0.2, colour="#ffffff") +
+    cubble::geom_glyph_box(data=nasa, 
+                           aes(x_major = long, 
+                               x_minor = day,
+                               y_major = lat, 
+                               y_minor = surftemp), 
+                           fill=NA) +
+    cubble::geom_glyph(data=nasa, 
+                       aes(x_major = long, 
+                           x_minor = day,
+                           y_major = lat, 
+                           y_minor = surftemp), 
+                       polar=TRUE) +
+    theme_map() 
+```
+]
+]
+]
+
+]
+]
+---
+# .orange[Case study] .bg-orange.circle[1] Temperature change in Americas
+
+## Exploring El Nino
+
+Slice space, and show the time series, and the pattern is very clear: The seasonal water temperature decrease doesn't happen in 1997, and water in this area stays unseasonably warm.
+
+&lt;img src="images/lecture-10A/over_time-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+---
+
+<span>&lt;i class="fas  fa-wrench faa-wrench animated-hover faa-slow " style=" color:#D93F00;"&gt;&lt;/i&gt;</span> Your turn using tsibbletalk
+
+.s500.f5[
+
+```r
+library(tsibble)
+library(tsibbletalk)
+library(lubridate)
+nasa_shared &lt;- nasa %&gt;% 
+  mutate(date = ymd(date)) %&gt;%
+  select(long, lat, date, surftemp, id) %&gt;%
+  as_tsibble(index=date, key=id) %&gt;%
+  as_shared_tsibble()
+p1 &lt;- nasa_shared %&gt;%
+  ggplot(aes(x = long, y = lat)) +
+  geom_point(aes(group = id)) 
+p2 &lt;- nasa_shared %&gt;%
+  ggplot(aes(x = date, y = surftemp)) +
+  geom_line(aes(group = id), alpha = 0.5) 
+library(plotly)
+subplot(
+    ggplotly(p1, tooltip = "Region", width = 100),
+    ggplotly(p2, tooltip = "Region", width = 900),
+    nrows = 1, widths=c(0.4, 0.6)) %&gt;%
+  highlight(dynamic = TRUE)
+```
+]
+
+---
+background-image: url(images/week10A/space-time.jpg)
+background-size: 60%
+background-position: 95% 35%
+
+.w-35[
+# Thinking about spatiotemporal data
+
+Space is a continuous variable, and in theory it fills out a square (or polygon). 
+
+Often, though it is .monash-blue2[measured irregularly]. Sensor stations are sporadically placed. 
+
+This affects making a density display of the measured variable. Strategy is to .monash-blue2[plot it at the resolution given], before trying to make a regular grid. 
+
+]
+
+---
+background-image: url(images/week10A/usa-lin-legend.jpg)
+background-size: 20%
+background-position: 95% 80%
+
+# Glyphmaps of irregular space data
+
+Linear model fit to temperature recorded at historical weather stations across the USA ([USHCN](https://www.ncei.noaa.gov/products/land-based-station/us-historical-climatology-network))
+
+&lt;img src="images/week10A/usa-lin-overlap.png" width="70%"&gt;
+
+---
+background-image: url(images/week10A/usa-lin-collapse-legend.jpg)
+background-size: 20%
+background-position: 95% 80%
+
+# Regularising
+
+Measurements from nearby stations have been merged. Note, some [areas of the USA have been cooling](https://www.epa.gov/climate-indicators/climate-change-indicators-us-and-global-temperature). This is interesting!
+
+&lt;img src="images/week10A/usa-lin-collapse.png" width="70%"&gt;
+
+---
+background-image: url(images/week10A/usa-season-legend.jpg)
+background-size: 20%
+background-position: 95% 80%
+
+# Seasonality
+
+De-construct time into a seasonal component, and representing this on the map is reasonable also. 
+
+&lt;img src="images/week10A/usa-season-collapsed.png" width="70%"&gt;
+
+---
+
+
+# Resources and Acknowledgement
+
+- [cubble](https://huizezhang-sherry.github.io/cubble): A Vector Spatio-Temporal Data Structure for Data Analysis
+- [sf](https://r-spatial.github.io/sf/): Simple Features for R
+- [Healy (2018) Data Visualization](https://socviz.co/maps.html#maps)
+- [Perpinan Lamigueiro (2018) Displaying time series, spatial and space-time data with R](https://oscarperpinan.github.io/bookvis/)
+- Wikle, Zammit-Mangion, Cressie (2018) [Spatio-Temporal Statistics with R](https://spacetimewithr.org)
+- [Moraga, Paula. (2019). Geospatial Health Data](https://www.paulamoraga.com/book-geospatial/index.html)
+- [Visualising spatial data using R](https://rspatialdata.github.io)
+
+---
+
+
+
+
+background-size: cover
+class: title-slide
+background-image: url("images/bg-12.png")
+
+&lt;a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"&gt;&lt;img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /&gt;&lt;/a&gt;&lt;br /&gt;This work is licensed under a &lt;a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"&gt;Creative Commons Attribution-ShareAlike 4.0 International License&lt;/a&gt;.
+
+
+.bottom_abs.width100[
+
+Lecturer: *Di Cook*
+
+
+
+&lt;i class="fas fa-envelope"&gt;&lt;/i&gt;  ETC5521.Clayton-x@monash.edu
+
+&lt;i class="fas fa-calendar-alt"&gt;&lt;/i&gt; Week 10 - Session 1
+
+&lt;br&gt;
+
+]
+
+
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="lib/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "magula",
+"highlightLanguage": "r",
+"highlightLines": true,
+"highlightSpans": false,
+"countIncrementalSlides": false,
+"slideNumberFormat": "%current%/%total%",
+"navigation": {
+"scroll": false,
+"touch": true,
+"click": false
+},
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'lib/mathjax-local/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

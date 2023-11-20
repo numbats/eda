@@ -1,0 +1,61 @@
+schedule:
+  - week: "00"
+    topic: "Course information"
+    readings:
+    assessment:
+  - week: "01 (Jul 24)"
+    topic: "Overview. Why this course? What is EDA?"
+    readings: "[The Landscape of R Packages for Automated Exploratory Data Analysis](https://journal.r-project.org/archive/2019/RJ-2019-033/RJ-2019-033.pdf)"
+    assessment: "Tutorial preparation quizzes due *each week*."
+  - week: "02 (Jul 31)"
+    topic: "Learning from history"
+    readings: "[EDA Case Study: Bay area blues](https://vita.had.co.nz/papers/bay-area-blues.pdf)"
+  - week: "03 (Aug 7)"
+    topic: "Initial data analysis and model diagnostics: Model dependent exploration and how it differs from EDA"
+    readings: "[The initial examination of data](https://www.jstor.org/stable/2981969?seq=1#metadata_info_tab_contents)"
+  - week: "04 (Aug 14)"
+    readings: "[Wickham et al. (2010) Graphical inference for Infovis](https://vita.had.co.nz/papers/inference-infovis.pdf)"
+    topic: "Using computational tools to determine whether what is seen in the data can be assumed to apply more broadly"
+  - week: "05 (Aug 21)"
+    assessment: "Assignment 1 (individual) due on Fri Aug 25, 4:30pm"
+    readings: "Unwin (2015) Graphical Data Analysis Ch 3-4; [Wilke (2019) Ch 6 Visualizing Amounts; Ch 7 Visualizing distributions](https://clauswilke.com/dataviz/histograms-density-plots.html); "
+    topic: "Working with a single variable, making transformations, detecting outliers, using robust statistics"
+  - week: "06 (Aug 28)"
+    readings: "Unwin (2015) Graphical Data Analysis Ch 5; Wilke (2019) [Ch 12 Visualising associations](https://clauswilke.com/dataviz/visualizing-associations.html)"
+    topic: "Bivariate dependencies and relationships, transformations to linearise"
+  - week: "07 (Sep 4)"
+    readings: "Wilke (2019) [Ch 9, 10.2-4, 11.2](https://clauswilke.com/dataviz); Unwin (2015) Graphical Data Analysis Ch 10"
+    topic: "Making comparisons between groups and strata"
+  - week: "08 (Sep 11)"
+    assessment: "Assignment 2 (individual) due on Fri Sep 15, 4:30pm"
+    readings: "Unwin (2015) Graphical Data Analysis Ch 6; [Cook and Laa (2023) Interactively exploring high-dimensional data and models in R Chapter 1](https://dicook.github.io/mulgar_book/1-intro.html)"
+    topic: "Going beyond two variables, exploring high dimensions"
+  - week: "09 (Sep 18)"
+    readings: "[Reintroducing tsibble: data tools that melt the clock](https://blog.earo.me/2018/12/20/reintro-tsibble/); [brolgar: An R package to BRowse Over Longitudinal Data Graphically and Analytically in R](https://journal.r-project.org/articles/RJ-2022-023/); [Listen to Nick talking about longitudinal data](https://posit.co/resources/videos/making-better-spaghetti-plots-exploring-the-individuals-in-longitudinal-data-with-the-brolgar-pac/); Unwin (2015) Graphical Data Analysis Ch 11"
+    topic: "Exploring data having a space and time context Part I"
+  - week: "10 (Oct 2)"
+    assessment: "Assignment 3 (part 1) due on Fri Oct 6, 4:30pm"
+    readings: "[Moraga (2019) Spatial data and R packages for mapping](https://www.paulamoraga.com/book-geospatial/sec-spatialdataandCRS.html); [cubble: A Vector Spatio-Temporal Data Structure for Data Analysis](https://huizezhang-sherry.github.io/cubble/); [Making maps plot faster](https://huizezhangsh.netlify.app/blogs/2022-05-21-ggplot-sf/) [Simplify spatial polygons](https://andyteucher.ca/rmapshaper/); [sf: Simple Features for R](https://r-spatial.github.io/sf/)"
+    topic: "Exploring data having a space and time context Part II"
+  - week: "11 (Oct 9)"
+    readings: "Cook & Weisberg (1994) An Introduction to Regression Graphics Ch 6; Cleveland (1993) Visualising Data Ch 4; ; [How to use a tour to check if your model suffers from multicollinearity](http://www.dicook.org/2019/09/13/touring-to-check-for-multicollinearity/)"
+    topic: "Sculpting data using models, checking assumptions, co-dependency and performing diagnostics"
+  - week: "12 (Oct 16)"
+    topic: "Extending beyond the data, what can and cannot be inferred more generally, given the data collection"
+    readings:
+    assessment: "Assignment 3 (part 2) due on Fri Oct 27, 4:30pm"
+team:
+  - name: Prof Di Cook (Chief Examiner)
+    role: lecturer
+    consult: Tue 2:00-3:00 (352 Education Blg, 29 Ancora Imparo Way, Clayton campus)
+  - name: Jayani Lakshika
+    role: tutor
+    consult: Fri 12:30-13:30 Menzies W9.20
+  - name: Thomas Nguyen
+    role: tutor
+    consult: Wed 4:00-4:45 Menzies W9.20
+timetable:
+  - lecture: Thu 08:00-10:00 (CL_Col-21.Eng-Lec_E1 and zoom link in moodle)
+  - tutorial:
+      - Thu 15:00-16:30 CL_Anc-19.LTB_132 (Jayani)
+      - Thu 16:30-18:00 CL_Anc-19.LTB_132 (Thomas)

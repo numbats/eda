@@ -1,0 +1,1760 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>ETC5521: Exploratory Data Analysis</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Di Cook" />
+    <script src="lib/header-attrs-2.22/header-attrs.js"></script>
+    <link href="lib/remark-css-0.0.1/ninjutsu.css" rel="stylesheet" />
+    <script src="lib/kePrint-0.0.1/kePrint.js"></script>
+    <link href="lib/lightable-0.0.1/lightable.css" rel="stylesheet" />
+    <link href="lib/font-awesome-animation-1.0/font-awesome-animation-emi.css" rel="stylesheet" />
+    <script src="lib/fontawesome-5.0.13/js/fontawesome-all.min.js"></script>
+    <link href="lib/countdown-0.4.0/countdown.css" rel="stylesheet" />
+    <script src="lib/countdown-0.4.0/countdown.js"></script>
+    <script src="assets/panelset-modified.js"></script>
+
+    <!--
+    <script defer src="assets/all.min.js"></script>
+
+    Need below to enable css contents
+
+    <script>
+      window.FontAwesomeConfig = {
+        searchPseudoElements: true
+      }
+    </script>
+
+    -->
+    <link rel="stylesheet" href="assets/font-awesome-all.css" type="text/css" />
+    <link rel="stylesheet" href="assets/tachyons-addon.css" type="text/css" />
+    <link rel="stylesheet" href="assets/animate.css" type="text/css" />
+    <link rel="stylesheet" href="assets/boxes.css" type="text/css" />
+    <link rel="stylesheet" href="assets/table.css" type="text/css" />
+    <link rel="stylesheet" href="assets/styles.css" type="text/css" />
+    <link rel="stylesheet" href="assets/monash-brand.css" type="text/css" />
+    <link rel="stylesheet" href="assets/monash-fonts.css" type="text/css" />
+    <link rel="stylesheet" href="assets/slide-types.css" type="text/css" />
+    <link rel="stylesheet" href="assets/panelset-modified.css" type="text/css" />
+    <link rel="stylesheet" href="assets/scroll.css" type="text/css" />
+    <link rel="stylesheet" href="assets/datatables.css" type="text/css" />
+    <link rel="stylesheet" href="assets/di2.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+
+
+
+
+
+
+class: middle center hide-slide-number monash-bg-gray80
+
+
+
+
+
+.info-box.w-50.bg-white[
+These slides are viewed best by Chrome or Firefox and occasionally need to be refreshed if elements did not load properly. See &lt;a href=lecture-06A.pdf&gt;here for the PDF &lt;i class="fas fa-file-pdf"&gt;&lt;/i&gt;&lt;/a&gt;. 
+]
+
+&lt;br&gt;
+
+.white[Press the **right arrow** to progress to the next slide!]
+
+
+
+---
+
+class: title-slide
+count: false
+background-image: url("images/bg-12.png")
+
+# .monash-blue[ETC5521: Exploratory Data Analysis]
+
+&lt;h1 class="monash-blue" style="font-size: 30pt!important;"&gt;&lt;/h1&gt;
+
+&lt;br&gt;
+
+&lt;h2 style="font-weight:900!important;"&gt;Exploring bivariate dependencies&lt;/h2&gt;
+
+.bottom_abs.width100[
+
+Lecturer: *Di Cook*
+
+
+
+&lt;i class="fas fa-envelope"&gt;&lt;/i&gt;  ETC5521.Clayton-x@monash.edu
+
+&lt;i class="fas fa-calendar-alt"&gt;&lt;/i&gt; Week 6 - Session 1
+
+&lt;br&gt;
+
+]
+
+
+
+---
+class: transition middle
+
+.blockquote[The world is full of obvious things which nobody by any chance observes.
+.pull-right[&amp;mdash;  Quote from Sherlock Holmes] 
+]
+
+&lt;br&gt;&lt;br&gt;
+Some parts of this lecture are based on Chapter 5  of Unwin (2015) Graphical Data Analysis with R
+
+
+---
+# The story of the galloping horse
+
+
+Galloping horses throughout history were drawn with all four legs out.
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+
+&lt;table&gt; 
+&lt;tr style="background-color:white;text-align:center;"&gt; &lt;td style="background-color:white;text-align:center;"&gt;
+&lt;img src="https://ejmuybridge.files.wordpress.com/2010/07/baronet.jpg" width="90%"&gt; 
+&lt;/td&gt; &lt;td style="background-color:white;text-align:center;"&gt;
+&lt;img src="https://ejmuybridge.files.wordpress.com/2010/07/derbyepsom1.jpg" width="90%"&gt;
+&lt;/td&gt;&lt;/tr&gt;
+&lt;tr style="background-color:white;text-align:center;"&gt; &lt;td&gt; Baronet, 1794 &lt;/td&gt;&lt;td&gt; Derby D'Epsom 1821&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+
+
+.footnote[[Lankester: The Problem of the Galloping Horse](https://ejmuybridge.wordpress.com/2010/07/20/lankester-the-problem-of-the-galloping-horse/)s]
+
+---
+# The story of the galloping horse
+
+&lt;br&gt;With the birth of photography, and particular motion photography, Muybridge was able to illustrate that this leg position was impossible.
+--
+
+&lt;br&gt;&lt;br&gt;&lt;img src="https://upload.wikimedia.org/wikipedia/commons/0/07/The_Horse_in_Motion-anim.gif" width="40%"&gt; 
+--
+
+&lt;img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/The_Horse_in_Motion_high_res.jpg/440px-The_Horse_in_Motion_high_res.jpg"  width="50%"&gt;
+
+---
+# My painting stories
+
+.panelset[
+.panel[.panel-name[hills first try]
+.blockquote.w-90[Hills are more interesting than that
+
+.pull-right[&amp;mdash; Mrs Robinson, my high school art teacher]
+]
+
+&lt;br&gt;
+&lt;br&gt;
+
+&lt;center&gt;
+&lt;img src="images/week6/hills-di1.jpg" width="60%"/&gt;
+&lt;/center&gt;
+
+]
+.panel[.panel-name[hills second try]
+
+.blockquote.w-90[Hills need to have shadows in them]
+
+so I put some shadows on. 
+
+&lt;br&gt;
+&lt;br&gt;
+
+&lt;center&gt;
+&lt;img src="images/week6/hills-di2.jpg" width="60%"/&gt;
+&lt;/center&gt;
+
+]
+.panel[.panel-name[hill photo]
+
+
+Mrs Robinson looks horrified!
+
+.blockquote.w-50[Go and take another look at the hills]
+
+&lt;br&gt;
+&lt;br&gt;
+
+&lt;center&gt;
+&lt;img src="images/week6/hills1.jpg" width="40%"/&gt;
+&lt;img src="images/week6/hills2.jpg" width="40%"/&gt;
+&lt;/center&gt;
+
+]
+
+.panel[.panel-name[lemons]
+.flex[
+.w-30[
+&lt;center&gt;
+&lt;br&gt;&lt;br&gt;
+&lt;img src="https://live.staticflickr.com/8003/6988568498_f96d4c4368_b.jpg" width="50%" /&gt; 
+&lt;/center&gt;
+
+&lt;br&gt;
+&lt;center&gt;
+Something is missing
+&lt;/center&gt;
+
+]
+.w-30[
+&lt;center&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;img src="images/week6/lemon_sketch.png" width="70%" /&gt; 
+&lt;br&gt;
+&lt;br&gt;
+My sketch
+&lt;/center&gt;
+]
+.w-30[
+&lt;center&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;img src="https://emptyeasel.com/wp-content/uploads/2011/10/lemonreflectionsstudy.jpg" width="70%" /&gt; 
+
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;center&gt;
+Notice the yellow reflection?
+&lt;/center&gt;
+
+]
+]
+]
+.panel[.panel-name[trees]
+.flex[
+.w-50[
+&lt;center&gt;
+&lt;img src="images/week6/green_trees.png" width="60%" /&gt; 
+
+&lt;br&gt;&lt;br&gt;
+Does it look like a tree?
+
+&lt;/center&gt;
+]
+.w-50[
+
+&lt;br&gt;
+&lt;br&gt;
+
+&lt;center&gt;
+
+Trees actually have lots of different colours in them
+
+&lt;br&gt;
+&lt;br&gt;
+
+&lt;img src="images/week6/trees.jpg" width="90%" /&gt; 
+&lt;/center&gt;
+]
+
+]
+]
+]
+
+---
+class: middle
+
+## Take-away message
+
+We have a tendency to 
+
+- only see what other people have done or say, not what we can see, e.g. paint based on what other people have painted. 
+- Or impose beliefs, like trees are green.
+
+You might discover that there is a different story. 
+
+---
+class: transition middle 
+
+# Try to see with fresh eyes
+
+---
+# The scatterplot
+
+.info-box[Scatterplots are the natural plot to make to explore .monash-blue2[association] between two .monash-blue2[**continuous** (quantitative or numeric) variables].]
+
+They are not just for .monash-orange2[linear] relationships but are useful for examining .monash-orange2[nonlinear] patterns, .monash-orange2[clustering] and .monash-orange2[outliers]. 
+
+We also can think about scatterplots in terms of statistical distributions: if a histogram shows a marginal distribution, a .monash-blue2[scatterplot] allows us to examine the .monash-blue2[bivariate distribution] of a sample.
+
+---
+# History
+
+&lt;br&gt;
+&lt;br&gt;
+
+&gt; *Scatter plots are glorious. Of all the major chart types, they are by far the most powerful. They allow us to .monash-orange2[quickly understand relationships] that would be nearly impossible to recognize in a table or a different type of chart. ... Michael Friendly and Daniel Denis, psychologists and historians of graphics, call the scatter plot the most "generally useful invention in the history of statistical graphics."* 
+
+&gt; [Dan Kopf](https://qz.com/1235712/the-origins-of-the-scatter-plot-data-visualizations-greatest-invention/)
+
+---
+# History
+
+- Descartes provided the Cartesian coordinate system in the 17th century, with perpendicular lines indicating two axes.
+--
+
+- It wasn't until .monash-orange2[**1832**] that the scatterplot appeared, when [John Frederick Herschel](http://www.datavis.ca/milestones/index.php?group=1800%2B) plotted position and time of double stars.
+--
+
+- This is 200 years after the Cartesian coordinate system, and [50 years after bar charts and line charts](http://www.datavis.ca/milestones/index.php?group=1700s) appeared, used in the work of William Playfair to examine economic data.
+--
+
+- Kopf argues that .monash-orange2[*The scatter plot, by contrast, proved more useful for scientists*, but it clearly is useful for economics today].
+
+
+.footnote[http://www.datavis.ca/milestones/]
+
+---
+class: informative middle
+## Language and terminology
+
+Are the words "correlation" and "association" interchangeable?
+
+&gt; .monash-gray10[In the broadest sense] **correlation** .monash-gray10[is any statistical association, though it commonly refers to the degree to which a pair of variables are] **linearly** .monash-gray10[related]. [Wikipedia](https://en.wikipedia.org/wiki/Correlation_and_dependence)
+
+&lt;br&gt;
+&lt;br&gt;
+.info-box[If the .monash-orange2[relationship is not linear], call it .monash-orange2[association], and avoid correlated.]
+
+
+---
+
+# Possible features of a pair of continuous variables 1/3
+
+
+
+&lt;table class=" lightable-classic" style='font-family: "Arial Narrow", "Source Sans Pro", sans-serif; margin-left: auto; margin-right: auto;'&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Feature &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Example &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Description &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; positive trend &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; &lt;img src="images/lecture-05A/scatterplots-1.png" height="54px"&gt; &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Low value corresponds to low value, and high to high. &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; negative trend &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; &lt;img src="images/lecture-05A/scatterplots-2.png" height="54px"&gt; &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Low value corresponds to high value, and high to low. &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; no trend &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; &lt;img src="images/lecture-05A/scatterplots-3.png" height="54px"&gt; &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; No relationship &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; strong &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; &lt;img src="images/lecture-05A/scatterplots-4.png" height="54px"&gt; &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Very little variation around the trend &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; moderate &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; &lt;img src="images/lecture-05A/scatterplots-5.png" height="54px"&gt; &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Variation around the trend is almost as much as the trend &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; weak &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; &lt;img src="images/lecture-05A/scatterplots-6.png" height="54px"&gt; &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; A lot of variation making it hard to see any trend &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+
+---
+
+# Possible features of a pair of continuous variables 2/3
+
+
+
+&lt;table class=" lightable-classic" style='font-family: "Arial Narrow", "Source Sans Pro", sans-serif; margin-left: auto; margin-right: auto;'&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Feature &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Example &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Description &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; linear form &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; &lt;img src="images/lecture-05A/scatterplots2-1.png" height="54px"&gt; &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; The shape is linear &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; nonlinear form &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; &lt;img src="images/lecture-05A/scatterplots2-2.png" height="54px"&gt; &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; The shape is more of a curve &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; nonlinear form &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; &lt;img src="images/lecture-05A/scatterplots2-3.png" height="54px"&gt; &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; The shape is more of a curve &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; outliers &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; &lt;img src="images/lecture-05A/scatterplots2-4.png" height="54px"&gt; &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; There are one or more points that do not fit the pattern on the others &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; clusters &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; &lt;img src="images/lecture-05A/scatterplots2-5.png" height="54px"&gt; &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; The observations group into multiple clumps &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; gaps &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; &lt;img src="images/lecture-05A/scatterplots2-6.png" height="54px"&gt; &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; There is a gap, or gaps, but its not clumped &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# Possible features of a pair of continuous variables 3/3
+
+
+
+
+&lt;table class=" lightable-classic" style='font-family: "Arial Narrow", "Source Sans Pro", sans-serif; margin-left: auto; margin-right: auto;'&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Feature &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Example &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Description &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; barrier &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; &lt;img src="images/lecture-05A/scatterplots3-1.png" height="54px"&gt; &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; There is combination of the variables which appears impossible &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; l-shape &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; &lt;img src="images/lecture-05A/scatterplots3-2.png" height="54px"&gt; &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; When one variable changes the other is approximately constant &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; discreteness &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; &lt;img src="images/lecture-05A/scatterplots3-3.png" height="54px"&gt; &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Relationship between two variables is different from the overall, and observations are in a striped pattern &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; heteroskedastic &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; &lt;img src="images/lecture-05A/scatterplots3-4.png" height="54px"&gt; &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Variation is different in different areas, maybe depends on value of x variable &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; weighted &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; &lt;img src="images/lecture-05A/scatterplots3-5.png" height="54px"&gt; &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; If observations have an associated weight,  reflect in scatterplot, e.g. bubble chart &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# Additional considerations (Unwin, 2015):
+
+- **causation**: one variable has a direct influence on the other variable, in some way. For example, people who are taller tend to weigh more. The dependent variable is conventionally on the y axis. *It's not generally possible to tell from the plot that the relationship is causal, which typically needs to be argued from other sources of information.*
+- **association**: variables may be related to one another, but through a different variable, eg ice cream sales are positively correlated with beach drownings, is most likely a temperature relationship.
+- **conditional relationships**: the relationship between variables is conditionally dependent on another, such as income against age likely has a different relationship depending on retired or not.
+
+---
+class: transition middle
+
+# Famous data examples
+
+---
+# Famous scatterplot examples
+
+.flex[
+.w-50[
+
+### Anscombe's quartet
+
+&lt;img src="images/lecture-06A/anscombe-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+All four sets of Anscombe has .monash-orange2[same means, standard deviations and correlations], `\(\bar{x}\)` = 9, `\(\bar{y}\)` = 7.5, `\(s_x\)` = 3.3, 
+`\(s_y\)` = 2, `\(r\)` = 0.82.
+
+And similarly all 13 sets of the datasaurus dozen have .monash-orange2[same means, standard deviations and correlations], `\(\bar{x}\)` = 54, `\(\bar{y}\)` = 48, `\(s_x\)` = 17, 
+`\(s_y\)` = 27, `\(r\)` = -0.06.
+
+
+]
+.w-50[
+
+### Datasaurus dozen
+
+&lt;img src="images/lecture-06A/dinosaur-1.png" width="30%" style="display: block; margin: auto;" /&gt;
+
+&lt;img src="images/lecture-06A/datasaurus-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+]
+]
+---
+class: transition middle
+
+# Scatterplot case studies
+
+---
+# .orange[Case study] .bg-orange.circle[1] Olympics
+
+
+
+
+.panelset[
+.panel[.panel-name[🖼️]
+.grid[
+.item[
+&lt;img src="images/lecture-06A/2012-olympics-plot1-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+]
+.item[
+
+* `Warning message: Removed 1346 rows containing missing values (geom_point)`
+* The expected linear relationship between height and weight is visible, although obscured by outliers.
+* Some discretization of heights, and higher weight values. 
+* Likely to be substantial overplotting (57 athletes 1.7m, 60kg can't tell this from this plot). 
+* Note the unusual height-weight combinations. What sport(s) would you expect some of these athletes might be participating in?
+
+
+]
+]
+]
+.panel[.panel-name[data]
+.h400.scroll-sign[
+
+```r
+data(oly12, package = "VGAMdata")
+skimr::skim(oly12)
+```
+
+```
+## ── Data Summary ────────────────────────
+##                            Values
+## Name                       oly12 
+## Number of rows             10384 
+## Number of columns          14    
+## _______________________          
+## Column type frequency:           
+##   Date                     1     
+##   factor                   6     
+##   numeric                  7     
+## ________________________         
+## Group variables            None  
+## 
+## ── Variable type: Date ─────────────────────────────────────────────────────────
+##   skim_variable n_missing complete_rate min        max        median    
+## 1 DOB                6192         0.404 1947-06-01 1997-07-09 1986-09-11
+##   n_unique
+## 1     2149
+## 
+## ── Variable type: factor ───────────────────────────────────────────────────────
+##   skim_variable n_missing complete_rate ordered n_unique
+## 1 Name                  0             1 FALSE      10366
+## 2 Country               0             1 FALSE        205
+## 3 Sex                   0             1 FALSE          2
+## 4 PlaceOB               0             1 FALSE       4108
+## 5 Sport                 0             1 FALSE         42
+## 6 Event                 0             1 FALSE        763
+##   top_counts                             
+## 1 Lei: 3, Lin: 3, Ale: 2, Hao: 2         
+## 2 Gre: 523, Uni: 518, Rus: 414, Aus: 399 
+## 3 M: 5756, F: 4628                       
+## 4 emp: 2690, Seo: 57, Bud: 54, Mos: 50   
+## 5 Ath: 2119, Swi: 907, Foo: 596, Row: 524
+## 6 Men: 336, Wom: 260, Wom: 210, Men: 206 
+## 
+## ── Variable type: numeric ──────────────────────────────────────────────────────
+##   skim_variable n_missing complete_rate    mean     sd    p0   p25   p50   p75
+## 1 Age                   0         1     26.1     5.44  13    22    25    29   
+## 2 Height              561         0.946  1.77    0.113  1.32  1.69  1.77  1.85
+## 3 Weight             1280         0.877 72.9    16.1   36    61    70    81   
+## 4 Gold                  0         1      0.0167  0.136  0     0     0     0   
+## 5 Silver                0         1      0.0170  0.133  0     0     0     0   
+## 6 Bronze                0         1      0.0185  0.136  0     0     0     0   
+## 7 Total                 0         1      0.0522  0.250  0     0     0     0   
+##     p100 hist 
+## 1  71    ▆▇▁▁▁
+## 2   2.21 ▁▃▇▃▁
+## 3 218    ▇▆▁▁▁
+## 4   2    ▇▁▁▁▁
+## 5   2    ▇▁▁▁▁
+## 6   2    ▇▁▁▁▁
+## 7   5    ▇▁▁▁▁
+```
+]]
+.panel[.panel-name[R]
+
+
+```r
+ggplot(oly12, aes(x = Height, y = Weight, label = Sport)) +
+  geom_point()
+```
+
+]
+]
+
+---
+class: center
+
+<span>&lt;i class="fas  fa-wrench fa-3x faa-wrench animated-hover faa-slow " style=" color:#D93F00;"&gt;&lt;/i&gt;</span> Your turn, .monash-blue[cut and paste the code] into your R console, and <span class="fa-2x faa-ring animated-hover faa-slow " style=" color:#D93F00; display: -moz-inline-stack; display: inline-block; transform: rotate(0deg);">mouse over</span> the resulting plot to examine the sport of the athlete. 
+
+&lt;br&gt;
+&lt;br&gt;
+
+.font_medium[
+
+```r
+*library(tidyverse)
+*library(plotly)
+*data(oly12, package = "VGAMdata")
+*p &lt;- ggplot(oly12, aes(x = Height, y = Weight, label = Sport)) +
+* geom_point()
+*ggplotly(p)
+```
+]
+
+<div class="countdown clock" id="timer_ef1da5f0" data-update-every="1" tabindex="0" style="right:0;bottom:0;">
+<div class="countdown-controls"><button class="countdown-bump-down">&minus;</button><button class="countdown-bump-up">&plus;</button></div>
+<code class="countdown-time"><span class="countdown-digits minutes">05</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
+</div>
+---
+# How many athletes in the different sports? 
+
+.scroll-box-16[
+<div id="quhcwgcybs" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#quhcwgcybs table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#quhcwgcybs thead, #quhcwgcybs tbody, #quhcwgcybs tfoot, #quhcwgcybs tr, #quhcwgcybs td, #quhcwgcybs th {
+  border-style: none;
+}
+
+#quhcwgcybs p {
+  margin: 0;
+  padding: 0;
+}
+
+#quhcwgcybs .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#quhcwgcybs .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#quhcwgcybs .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#quhcwgcybs .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#quhcwgcybs .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#quhcwgcybs .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#quhcwgcybs .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#quhcwgcybs .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#quhcwgcybs .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#quhcwgcybs .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#quhcwgcybs .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#quhcwgcybs .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#quhcwgcybs .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#quhcwgcybs .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#quhcwgcybs .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#quhcwgcybs .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#quhcwgcybs .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#quhcwgcybs .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#quhcwgcybs .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#quhcwgcybs .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#quhcwgcybs .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#quhcwgcybs .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#quhcwgcybs .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#quhcwgcybs .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#quhcwgcybs .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#quhcwgcybs .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#quhcwgcybs .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#quhcwgcybs .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#quhcwgcybs .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#quhcwgcybs .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#quhcwgcybs .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#quhcwgcybs .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#quhcwgcybs .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#quhcwgcybs .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#quhcwgcybs .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#quhcwgcybs .gt_left {
+  text-align: left;
+}
+
+#quhcwgcybs .gt_center {
+  text-align: center;
+}
+
+#quhcwgcybs .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#quhcwgcybs .gt_font_normal {
+  font-weight: normal;
+}
+
+#quhcwgcybs .gt_font_bold {
+  font-weight: bold;
+}
+
+#quhcwgcybs .gt_font_italic {
+  font-style: italic;
+}
+
+#quhcwgcybs .gt_super {
+  font-size: 65%;
+}
+
+#quhcwgcybs .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#quhcwgcybs .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#quhcwgcybs .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#quhcwgcybs .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#quhcwgcybs .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#quhcwgcybs .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#quhcwgcybs .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+  <thead>
+    
+    <tr class="gt_col_headings">
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="Sport">Sport</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="n">n</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="Sport" class="gt_row gt_center">Athletics</td>
+<td headers="n" class="gt_row gt_right">2119</td></tr>
+    <tr><td headers="Sport" class="gt_row gt_center">Swimming</td>
+<td headers="n" class="gt_row gt_right">907</td></tr>
+    <tr><td headers="Sport" class="gt_row gt_center">Football</td>
+<td headers="n" class="gt_row gt_right">596</td></tr>
+    <tr><td headers="Sport" class="gt_row gt_center">Rowing</td>
+<td headers="n" class="gt_row gt_right">524</td></tr>
+    <tr><td headers="Sport" class="gt_row gt_center">Hockey</td>
+<td headers="n" class="gt_row gt_right">416</td></tr>
+    <tr><td headers="Sport" class="gt_row gt_center">Judo</td>
+<td headers="n" class="gt_row gt_right">368</td></tr>
+    <tr><td headers="Sport" class="gt_row gt_center">Shooting</td>
+<td headers="n" class="gt_row gt_right">368</td></tr>
+    <tr><td headers="Sport" class="gt_row gt_center">Sailing</td>
+<td headers="n" class="gt_row gt_right">360</td></tr>
+    <tr><td headers="Sport" class="gt_row gt_center">Wrestling</td>
+<td headers="n" class="gt_row gt_right">324</td></tr>
+    <tr><td headers="Sport" class="gt_row gt_center">Handball</td>
+<td headers="n" class="gt_row gt_right">319</td></tr>
+    <tr><td headers="Sport" class="gt_row gt_center">Boxing</td>
+<td headers="n" class="gt_row gt_right">272</td></tr>
+    <tr><td headers="Sport" class="gt_row gt_center">Volleyball</td>
+<td headers="n" class="gt_row gt_right">271</td></tr>
+    <tr><td headers="Sport" class="gt_row gt_center">Basketball</td>
+<td headers="n" class="gt_row gt_right">269</td></tr>
+    <tr><td headers="Sport" class="gt_row gt_center">Water Polo</td>
+<td headers="n" class="gt_row gt_right">249</td></tr>
+    <tr><td headers="Sport" class="gt_row gt_center">Weightlifting</td>
+<td headers="n" class="gt_row gt_right">243</td></tr>
+    <tr><td headers="Sport" class="gt_row gt_center">Fencing</td>
+<td headers="n" class="gt_row gt_right">235</td></tr>
+    <tr><td headers="Sport" class="gt_row gt_center">Canoe Sprint</td>
+<td headers="n" class="gt_row gt_right">232</td></tr>
+    <tr><td headers="Sport" class="gt_row gt_center">Equestrian</td>
+<td headers="n" class="gt_row gt_right">191</td></tr>
+    <tr><td headers="Sport" class="gt_row gt_center">Cycling - Road</td>
+<td headers="n" class="gt_row gt_right">187</td></tr>
+    <tr><td headers="Sport" class="gt_row gt_center">Gymnastics - Artistic</td>
+<td headers="n" class="gt_row gt_right">182</td></tr>
+    <tr><td headers="Sport" class="gt_row gt_center">Table Tennis</td>
+<td headers="n" class="gt_row gt_right">167</td></tr>
+    <tr><td headers="Sport" class="gt_row gt_center">Tennis</td>
+<td headers="n" class="gt_row gt_right">167</td></tr>
+    <tr><td headers="Sport" class="gt_row gt_center">Badminton</td>
+<td headers="n" class="gt_row gt_right">166</td></tr>
+    <tr><td headers="Sport" class="gt_row gt_center">Cycling - Track</td>
+<td headers="n" class="gt_row gt_right">162</td></tr>
+    <tr><td headers="Sport" class="gt_row gt_center">Diving</td>
+<td headers="n" class="gt_row gt_right">133</td></tr>
+    <tr><td headers="Sport" class="gt_row gt_center">Taekwondo</td>
+<td headers="n" class="gt_row gt_right">126</td></tr>
+    <tr><td headers="Sport" class="gt_row gt_center">Archery</td>
+<td headers="n" class="gt_row gt_right">121</td></tr>
+    <tr><td headers="Sport" class="gt_row gt_center">Triathlon</td>
+<td headers="n" class="gt_row gt_right">103</td></tr>
+    <tr><td headers="Sport" class="gt_row gt_center">Synchronised Swimming</td>
+<td headers="n" class="gt_row gt_right">101</td></tr>
+    <tr><td headers="Sport" class="gt_row gt_center">Beach Volleyball</td>
+<td headers="n" class="gt_row gt_right">93</td></tr>
+    <tr><td headers="Sport" class="gt_row gt_center">Gymnastics - Rhythmic</td>
+<td headers="n" class="gt_row gt_right">92</td></tr>
+    <tr><td headers="Sport" class="gt_row gt_center">Canoe Slalom</td>
+<td headers="n" class="gt_row gt_right">80</td></tr>
+    <tr><td headers="Sport" class="gt_row gt_center">Cycling - Mountain Bike</td>
+<td headers="n" class="gt_row gt_right">72</td></tr>
+    <tr><td headers="Sport" class="gt_row gt_center">Modern Pentathlon</td>
+<td headers="n" class="gt_row gt_right">69</td></tr>
+    <tr><td headers="Sport" class="gt_row gt_center">Cycling - BMX</td>
+<td headers="n" class="gt_row gt_right">43</td></tr>
+    <tr><td headers="Sport" class="gt_row gt_center">Trampoline</td>
+<td headers="n" class="gt_row gt_right">31</td></tr>
+    <tr><td headers="Sport" class="gt_row gt_center">Cycling - Road, Cycling - Track</td>
+<td headers="n" class="gt_row gt_right">16</td></tr>
+    <tr><td headers="Sport" class="gt_row gt_center">Cycling - Mountain Bike, Cycling - Road, Cycling - Track</td>
+<td headers="n" class="gt_row gt_right">3</td></tr>
+    <tr><td headers="Sport" class="gt_row gt_center">Cycling - Mountain Bike, Cycling - Track</td>
+<td headers="n" class="gt_row gt_right">3</td></tr>
+    <tr><td headers="Sport" class="gt_row gt_center">Cycling - Mountain Bike, Cycling - Road</td>
+<td headers="n" class="gt_row gt_right">2</td></tr>
+    <tr><td headers="Sport" class="gt_row gt_center">Athletics, Triathlon</td>
+<td headers="n" class="gt_row gt_right">1</td></tr>
+    <tr><td headers="Sport" class="gt_row gt_center">Cycling - BMX, Cycling - Track</td>
+<td headers="n" class="gt_row gt_right">1</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+]
+
+.scroll-sign[
+&lt;br&gt;
+&lt;br&gt;
+]
+---
+
+## Consolidate factor levels
+
+There are several cycling events that are reasonable to combine into one category. Similarly for gymnastics and athletics. 
+
+&lt;br&gt;
+
+
+```r
+oly12 &lt;- oly12 %&gt;%
+  mutate(Sport = as.character(Sport)) %&gt;%
+* mutate(Sport = ifelse(grepl("Cycling", Sport),
+    "Cycling", Sport
+* )) %&gt;%
+  mutate(Sport = ifelse(grepl("Gymnastics", Sport),
+    "Gymnastics", Sport
+  )) %&gt;%
+  mutate(Sport = ifelse(grepl("Athletics", Sport),
+    "Athletics", Sport
+  )) %&gt;%
+  mutate(Sport = as.factor(Sport))
+```
+
+
+---
+# Split the scatterplots by sport
+
+.panelset[
+.panel[.panel-name[🖼️]
+
+&lt;img src="images/lecture-06A/oly_facet-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+
+
+]
+.panel[.panel-name[learn]
+
+.grid[
+.item[
+
+- Some sports have no data for height, weight
+- The positive association between height and weight is visible across sports
+- Nonlinear in wrestling?
+- An outlier in judo, and football, and archery
+- Maybe flatter among swimmers
+- Taller in basketball, volleyball and handball
+- Shorter in athletics, weightlifting and wrestling
+- Little variance in tennis players
+- .monash-blue[*Its still messy, and hard to digest*]
+
+]
+
+.item[
+
+.monash-blue[Things to do to make comparisons easier:]
+
+- Remove sports with missings
+- Make regression lines for remaining sports on one plot
+- Separately examine male/female athletes
+- Compare just one group against the rest
+]]]
+.panel[.panel-name[R]
+
+
+```r
+ggplot(oly12, aes(x = Height, y = Weight)) +
+* geom_point(alpha = 0.5) +
+  facet_wrap(~Sport, ncol = 8) +
+* theme(aspect.ratio = 1)
+```
+
+&lt;br&gt;
+&lt;br&gt;
+Note: alpha transparency, and aspect ratio
+
+]
+]
+
+---
+# Remove missings, add colour for sex 
+
+.panelset[
+.panel[.panel-name[🖼️]
+
+&lt;img src="images/lecture-06A/oly_women-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+
+
+]
+.panel[.panel-name[learn]
+
+.grid[
+.item[
+
+.monash-orange2[Note: Because the focus is now on males vs females association shape within sport, make plots scale separately.]
+
+- Athletics category should have been broken into several more categories like track, field: a shot-putter has a very different physique to a sprinter.
+- Generally, clustering of male/female athletes
+- Outliers: a tall skinny male archer, a medium height very light female athletics athlete, tall light female weightlifter, tall light male volleyballer
+- Canoe slalom athletes, divers, cyclists are tiny.
+
+
+]]]
+.panel[.panel-name[R]
+
+
+```r
+oly12 %&gt;%
+  filter(!(Sport %in% c("Boxing", "Gymnastics", "Synchronised Swimming", "Taekwondo", "Trampoline"))) %&gt;%
+  mutate(Sport = fct_drop(Sport)) %&gt;%
+  ggplot(aes(x = Height, y = Weight, colour = Sex)) +
+  geom_point(alpha = 0.5) +
+  facet_wrap(~Sport, ncol = 7, scales = "free") +
+  scale_colour_brewer("", palette = "Dark2") +
+  theme(aspect.ratio = 1, axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+```
+
+]
+]
+
+---
+# Comparing association
+
+.panelset[
+.panel[.panel-name[🖼️]
+.flex[
+.w-50[
+&lt;img src="images/lecture-06A/oly_model-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+.w-50[
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;
+- Weightlifters are much heavier relative to height
+- Swimmers are leaner relative to height
+- Tennis players are a bit mixed, shorter tend to be heavier, taller tend to be lighter
+
+]]]
+.panel[.panel-name[R]
+
+
+```r
+oly12 %&gt;%
+  filter(Sport %in% c(
+    "Swimming", "Archery", "Basketball",
+    "Handball", "Hockey", "Tennis",
+    "Weightlifting", "Wrestling"
+  )) %&gt;%
+  filter(Sex == "F") %&gt;%
+  mutate(Sport = fct_drop(Sport), Sex = fct_drop(Sex)) %&gt;%
+  ggplot(aes(x = Height, y = Weight, colour = Sport)) +
+* geom_smooth(method = "lm", se = FALSE) +
+  scale_colour_brewer("", palette = "Dark2") +
+  theme(
+    legend.position = "bottom",
+    legend.direction = "horizontal"
+  )
+```
+
+]
+]
+
+---
+# Comparing variability
+
+.panelset[
+.panel[.panel-name[🖼️]
+
+.flex[
+.w-50[
+&lt;img src="images/lecture-06A/oly_density-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+.w-50[
+&lt;br&gt;&lt;br&gt;&lt;br&gt;
+
+- Modern pentathlon athletes are uniformly height and weight related
+- Shooters are quite varied in body type
+
+]]]
+.panel[.panel-name[R]
+
+
+```r
+oly12 %&gt;%
+* filter(Sport %in% c("Shooting", "Modern Pentathlon", "Basketball")) %&gt;%
+  filter(Sex == "F") %&gt;%
+  mutate(Sport = fct_drop(Sport), Sex = fct_drop(Sex)) %&gt;%
+  ggplot(aes(x = Height, y = Weight, colour = Sport)) +
+* geom_density2d() +
+  scale_colour_brewer("", palette = "Dark2") +
+  theme(
+    legend.position = "bottom",
+    legend.direction = "horizontal"
+  )
+```
+
+]
+]
+
+---
+# .orange[Case study] .bg-orange.circle[1] Olympics
+
+We have seen that the association between height and weight is "contaminated" by different variables, sport, gender, and possibly country and age, too. 
+
+Some of the categories also are "contaminated", for example, "Athletics" is masking many different types of events. This **lurking** variable probably contributes to different relationships depending on the event. There is another variable in the data set called `Event`. Athletics could be further divided based on key words in this variable. 
+
+&lt;br&gt;&lt;br&gt;
+.question-box[If you were just given the Height and Weight in this data could you have detected the presence of conditional relationships?]
+
+---
+# Can you see conditional dependencies?
+
+.panelset[
+.panel[.panel-name[🖼️]
+.grid[
+.item[
+&lt;img src="images/lecture-06A/oly_canyousee-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+]
+.item[
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+
+There is a hint of multimodality, barely a hint.
+
+It's not easy to detect the presence of the additional variable, and thus accurately describe the relationship between height and weight among Olympic athletes.
+
+]
+]
+]
+.panel[.panel-name[R]
+
+
+```r
+p1 &lt;- ggplot(oly12, aes(x = Height, y = Weight)) +
+  geom_point(alpha = 0.2, size = 4) +
+  theme_minimal() +
+  theme(aspect.ratio = 1)
+p2 &lt;- ggplot(oly12, aes(x = Height, y = Weight)) +
+  geom_density2d_filled() +
+  theme_minimal() +
+  theme(legend.position = "none", aspect.ratio = 1)
+p3 &lt;- ggplot(oly12, aes(x = Height, y = Weight)) +
+  geom_density2d(binwidth = 0.01) +
+  theme_minimal() +
+  theme(aspect.ratio = 1)
+p4 &lt;- ggplot(oly12, aes(x = Height, y = Weight)) +
+  geom_density2d(binwidth = 0.001, color = "white", size = 0.2) +
+  geom_density2d_filled(binwidth = 0.001) +
+  theme_minimal() +
+  theme(legend.position = "none", aspect.ratio = 1)
+grid.arrange(p1, p3, p2, p4, ncol = 2)
+```
+
+]
+]
+---
+# Focus on just women's tennis
+
+.panelset[
+.panel[.panel-name[🖼️]
+.flex[
+.w-50[
+&lt;img src="images/lecture-06A/oly_tennis-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+]
+.w-50[
+- positive
+- linear
+- moderate
+- relationship could be considered to be causation rather than association
+- outliers: one outlier, maybe two: one really short and light, and one tall but skinny
+
+&lt;br&gt;&lt;br&gt;
+
+.question-box[What is surprising here?]
+]
+]
+]
+.panel[.panel-name[R]
+
+
+```r
+oly12 %&gt;%
+  filter(Sport == "Tennis", Sex == "F") %&gt;%
+  ggplot(aes(x = Height, y = Weight)) +
+  geom_point(alpha = 0.9, size = 3)
+```
+
+]
+]
+
+---
+# Focus on just women's wrestling
+
+.panelset[
+.panel[.panel-name[🖼️]
+
+.flex[
+.w-50[
+&lt;img src="images/lecture-06A/oly_wrestling-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+]
+.w-50[
+- positive
+- non-linear
+- moderate
+- relationship could be considered to be causation rather than association
+- gaps: discreteness
+
+&lt;br&gt;&lt;br&gt;
+
+.question-box[What is surprising here?]
+
+]
+]
+]
+.panel[.panel-name[R]
+
+
+```r
+oly12 %&gt;%
+  filter(Sport == "Wrestling", Sex == "F") %&gt;%
+  ggplot(aes(x = Height, y = Weight)) +
+  geom_point(alpha = 0.9, size = 3)
+```
+
+]
+]
+---
+class: transition middle
+
+# Review: Modifications of scatterplots for particular purposes
+
+---
+
+
+
+
+&lt;table class=" lightable-classic" style='font-family: "Arial Narrow", "Source Sans Pro", sans-serif; margin-left: auto; margin-right: auto;'&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Modification &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Example &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Purpose &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; none &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; &lt;img src="images/lecture-05A/scatmodify-1.png" height="54px"&gt; &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; raw information &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; alpha-blend &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; &lt;img src="images/lecture-05A/scatmodify-2.png" height="54px"&gt; &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; alleviate overplotting to examine density at centre &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; model overlay &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; &lt;img src="images/lecture-05A/scatmodify-3.png" height="54px"&gt; &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; focus on the trend &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; model + data &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; &lt;img src="images/lecture-05A/scatmodify-4.png" height="54px"&gt; &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; trend plus variation &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; density &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; &lt;img src="images/lecture-05A/scatmodify-5.png" height="54px"&gt; &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; overall distribution, variation and clustering &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; filled density &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; &lt;img src="images/lecture-05A/scatmodify-6.png" height="54px"&gt; &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; high density locations in distribution (modes), variation and clustering &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; colour &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; &lt;img src="images/lecture-05A/scatmodify-7.png" height="54px"&gt; &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; relationship with conditioning and lurking variables &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; colour + density &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; &lt;img src="images/lecture-05A/scatmodify-8.png" height="54px"&gt; &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; relationship with conditioning and lurking variables &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+# Resources
+
+- Unwin (2015) [Graphical Data Analysis with R](http://www.gradaanwr.net)
+- Graphics using [ggplot2](https://ggplot2.tidyverse.org)
+- Wilke (2019) Fundamentals of Data Visualization https://clauswilke.com/dataviz/
+- Friendly and Denis "Milestones in History of Thematic Cartography, Statistical Graphics and Data Visualisation" available at http://www.datavis.ca/milestones/
+
+---
+
+
+
+
+background-size: cover
+class: title-slide
+background-image: url("images/bg-12.png")
+
+&lt;a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"&gt;&lt;img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /&gt;&lt;/a&gt;&lt;br /&gt;This work is licensed under a &lt;a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"&gt;Creative Commons Attribution-ShareAlike 4.0 International License&lt;/a&gt;.
+
+
+.bottom_abs.width100[
+
+Lecturer: *Di Cook*
+
+
+
+&lt;i class="fas fa-envelope"&gt;&lt;/i&gt;  ETC5521.Clayton-x@monash.edu
+
+&lt;i class="fas fa-calendar-alt"&gt;&lt;/i&gt; Week 6 - Session 1
+
+&lt;br&gt;
+
+]
+
+
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="lib/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "magula",
+"highlightLanguage": "r",
+"highlightLines": true,
+"highlightSpans": false,
+"countIncrementalSlides": false,
+"slideNumberFormat": "%current%/%total%",
+"navigation": {
+"scroll": false,
+"touch": true,
+"click": false
+},
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'lib/mathjax-local/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

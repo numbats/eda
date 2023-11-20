@@ -1,0 +1,914 @@
+---
+title: "ETC5521: Exploratory Data Analysis"
+subtitle: "Working with a single variable, making transformations, detecting outliers, using robust statistics"
+author: "Di Cook"
+email: "ETC5521.Clayton-x@monash.edu"
+date: "Week 5 - Session 2"
+length: "50 minutes"
+titlebgimg: "images/bg-01.png"
+output:
+  xaringan::moon_reader:
+    css:
+      - ninjutsu 
+      - "assets/font-awesome-all.css"
+      - "assets/tachyons-addon.css"
+      - "assets/animate.css"
+      - "assets/fira-code.css"
+      - "assets/boxes.css"
+      - "assets/table.css"
+      - "assets/styles.css"
+      - "assets/monash-brand.css"
+      - "assets/monash-fonts.css"
+      - "assets/slide-types.css"
+      - "assets/panelset-modified.css"
+      - "assets/scroll.css"
+    self_contained: false 
+    seal: false 
+    chakra: 'lib/remark-latest.min.js'
+    lib_dir: lib
+    includes:
+      in_header: "assets/head.html"
+    mathjax: "lib/mathjax-local/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
+    nature:
+      highlightStyle: magula
+      highlightLanguage: r 
+      highlightLines: true
+      highlightSpans: false 
+      countIncrementalSlides: false
+      slideNumberFormat: '%current%/%total%'
+      navigation:
+        scroll: false 
+        touch: true
+        click: false
+      ratio: '16:9'
+---
+
+```{r, include = FALSE}
+current_file <- knitr::current_input()
+basename <- gsub(".Rmd$", "", current_file)
+```
+
+```{r, include = FALSE}
+library(tidyverse)
+library(colorspace)
+library(patchwork)
+options(width = 200)
+knitr::opts_chunk$set(
+  fig.path = "images/week4B/",
+  fig.width = 6,
+  fig.height = 3.5,
+  fig.align = "center",
+  dev.args = list(bg = "transparent"),
+  # out.width = "100%",
+  fig.retina = 3,
+  echo = FALSE,
+  warning = FALSE,
+  message = FALSE,
+  cache = TRUE,
+  cache.path = "cache/week4B/"
+)
+theme_set(ggthemes::theme_gdocs(base_size = 12) +
+  theme(
+    plot.background = element_rect(fill = "transparent", colour = NA), axis.line.y = element_line(color = "black", linetype = "solid"),
+    plot.title.position = "plot",
+    plot.title = element_text(size = 16),
+    panel.background = element_rect(fill = "transparent", colour = NA),
+    legend.background = element_rect(fill = "transparent", colour = NA),
+    legend.key = element_rect(fill = "transparent", colour = NA)
+  ))
+```
+
+
+```{r titleslide, child="assets/titleslide.Rmd"}
+```
+
+
+---
+
+
+
+class: transition middle
+
+# Categorical variables
+
+<br><br>
+
+
+This lecture is based on Chapter 4  of <br><br>Unwin (2015) Graphical Data Analysis with R
+
+---
+
+# There are two types of categorical variables
+
+--
+
+<br><br>
+
+.monash-blue[**Nominal**] where there is no intrinsic ordering to the categories<br>
+**E.g.** blue, grey, black, white.
+
+--
+
+<br>
+
+.monash-blue[**Ordinal**] where there is a clear order to the categories.<Br>
+**E.g.** Strongly disagree, disagree, neutral, agree, strongly agree.
+
+
+---
+
+# Categorical variables in R
+
+.grid[
+.item.br[
+* In R, categorical variables may be encoded as **factors**.
+.f4[
+```{r factors, echo = TRUE}
+data <- c(2, 2, 1, 1, 3, 3, 3, 1)
+factor(data)
+```
+]
+* You can easily change the labels of the variables:
+.f4[
+```{r factor-labels, echo = TRUE}
+factor(data, labels = c("I", "II", "III"))
+```
+]
+]
+.item.f4[
+
+{{content}}
+
+]
+]
+
+--
+
+* Order of the factors are determined by the input:
+
+
+```{r factor-input, echo = TRUE}
+# numerical input are ordered in increasing order #<<
+factor(c(1, 3, 10))
+# character input are ordered alphabetically #<<
+factor(c("1", "3", "10"))
+# you can specify order of levels explicitly #<<
+factor(c("1", "3", "10"),
+  levels = c("1", "3", "10")
+)
+```
+
+
+---
+
+# Numerical factors in R
+
+```{r, echo = TRUE, warning = TRUE}
+x <- factor(c(10, 20, 30, 10, 20))
+mean(x)
+```
+
+--
+
+<i class="fas fa-exclamation-triangle"></i> `as.numeric` function returns the internal integer values of the factor
+```{r, echo = TRUE}
+mean(as.numeric(x))
+```
+
+--
+
+You probably want to use:
+
+.flex[
+.w-50[
+```{r, echo = TRUE}
+mean(as.numeric(levels(x)[x]))
+```
+
+]
+.w-50[
+```{r, echo = TRUE}
+mean(as.numeric(as.character(x)))
+```
+
+]
+]
+
+---
+# Numerical summaries: counts, proportions, percentages and odds
+
+.flex[
+.item.w-60[
+.scroll-sign[.s500.f4[
+```{r}
+# https://www.who.int/teams/global-tuberculosis-programme/data
+tb <- read_csv(here::here("data/TB_notifications_2023-08-21.csv"))
+tb_tot <- tb %>% 
+  rowwise() %>%
+  mutate(count = sum(c(new_sp, new_sn, new_su, new_ep, new_oth), na.rm=T)) %>%
+  select(country, iso3, year, count) %>%
+  ungroup()
+tb_oz <- tb_tot %>%
+  filter(iso3 == "AUS")
+```
+
+```{r}
+options(digits=2)
+tb_oz %>%
+  filter(year >= 2000) %>%
+  mutate(p = count/sum(count),
+         pct = p*100, 
+         odds = count/count[year==2000]) %>%
+  print(n=100)
+```
+]]
+]
+.item.w-40[
+
+For qualitative data, compute 
+
+- count/frequency, 
+- proportion/percentage
+- and sometimes, an **odds ratio**. Here we have used ratio relative to the count in year 2000. 
+
+<br><br>
+**Note:** For exploration, no rounding of digits was done, but to report you would need to make the numbers pretty.
+]]
+---
+
+# .orange[Revisiting Case study] .circle.bg-orange.white[1] 2019 Australian Federal Election
+
+```{r aus-election-data1}
+df1 <- read_csv(here::here("data/HouseFirstPrefsByCandidateByVoteTypeDownload-24310.csv"),
+  skip = 1,
+  col_types = cols(
+    .default = col_character(),
+    OrdinaryVotes = col_double(),
+    AbsentVotes = col_double(),
+    ProvisionalVotes = col_double(),
+    PrePollVotes = col_double(),
+    PostalVotes = col_double(),
+    TotalVotes = col_double(),
+    Swing = col_double()
+  )
+)
+```
+```{r aus-election-data3}
+tdf3 <- df1 %>%
+  group_by(DivisionID) %>%
+  summarise(
+    DivisionNm = unique(DivisionNm),
+    State = unique(StateAb),
+    votes_GRN = TotalVotes[which(PartyAb == "GRN")],
+    votes_total = sum(TotalVotes)
+  ) %>%
+  mutate(perc_GRN = votes_GRN / votes_total * 100)
+```
+.panelset[
+.panel[.panel-name[📊]
+
+.flex[
+.w-50[
+```{r aus-election-plot1, fig.height = 5}
+tdf3 %>%
+  ggplot(aes(perc_GRN, State)) +
+  ggbeeswarm::geom_quasirandom(groupOnX = FALSE, varwidth = TRUE) +
+  labs(
+    x = "Percentage of first preference votes per division",
+    y = "State",
+    title = "First preference votes for the Greens party"
+  )
+```
+
+
+
+
+]
+.w-50[
+```{r aus-election-plot2, fig.height = 5}
+tdf3 %>%
+  mutate(State = fct_reorder(State, perc_GRN)) %>%
+  ggplot(aes(perc_GRN, State)) +
+  ggbeeswarm::geom_quasirandom(groupOnX = FALSE, varwidth = TRUE) +
+  labs(
+    x = "Percentage of first preference votes per division",
+    y = "State",
+    title = "First preference votes for the Greens party"
+  )
+```
+]
+
+]
+
+]
+.panel[.panel-name[data]
+.scroll-sign[.s400.f4[
+```{r, ref.label = c("aus-election-data1", "aus-election-data3"), echo = TRUE}
+```
+]]]
+.panel[.panel-name[R]
+.f4[
+```{r, ref.label=paste0("aus-election-plot", 1:2), echo = TRUE, eval = FALSE}
+```
+]]
+]
+
+--
+<br><br>
+<center>Sorting levels is (almost) always better when plotting</center>
+
+---
+
+class:  middle
+
+# Order nominal variables meaningfully
+
+<i class="fas fa-code"></i> **Coding tip**: use below functions to easily change the order of factor levels
+
+```{r, eval = FALSE, echo = TRUE}
+stats::reorder(factor, value, mean)
+forcats::fct_reorder(factor, value, median)
+forcats::fct_reorder2(factor, value1, value2, func)
+```
+
+
+
+
+
+
+---
+
+# .orange[Case study] .circle.bg-orange.white[6] Aspirin use after heart attack
+
+```{r meta-data, include = FALSE}
+data("Fleiss93", package = "meta")
+df6 <- Fleiss93 %>%
+  mutate(total = n.e + n.c)
+skimr::skim(df6)
+```
+
+.panelset[
+.panel[.panel-name[📊]
+
+.grid[
+.item[
+```{r meta-plot1, fig.height = 3}
+df6 %>%
+  mutate(study = fct_reorder(study, desc(total))) %>%
+  ggplot(aes(study, total)) +
+  geom_col() +
+  labs(x = "", y = "Frequency") +
+  guides(x = guide_axis(n.dodge = 2))
+
+```
+
+```{r meta-plot2, fig.height = 3}
+df6 %>%
+  mutate(
+    study = ifelse(total < 2000, "Other", study),
+    study = fct_reorder(study, desc(total))
+  ) %>%
+  ggplot(aes(study, total)) +
+  geom_col() +
+  labs(x = "", y = "Frequency")
+```
+
+]
+.item[
+
+* Meta-analysis is a statistical analysis that combines the results of multiple scientific studies.
+* This data studies the use of aspirin for death prevention after myocardial infarction, or in plain terms, a heart attack.
+* The ISIS-2 study has more patients than all other studies combined.
+* You could consider lumping the categories with low frequencies together.
+]
+
+
+]
+
+]
+.panel[.panel-name[data]
+.h300.f4.scroll-sign[
+```{r meta-data, echo = TRUE, render = knitr::normal_print}
+```
+]]
+.panel[.panel-name[R]
+.f4[
+```{r , ref.label=paste0("meta-plot", 1:2), echo = TRUE, eval = FALSE}
+```
+]]
+]
+
+.f5.footnote[
+Fleiss JL (1993): The statistical basis of meta-analysis. *Statistical Methods in Medical Research* **2** 121–145<br>
+Balduzzi S, Rücker G, Schwarzer G (2019), How to perform a meta-analysis with R: a practical tutorial, Evidence-Based Mental Health.
+]
+
+---
+
+class: nostripheader middle
+
+
+# Consider combining factor levels with low frequencies
+
+<i class="fas fa-code"></i> **Coding tip**: the following family of functions help to easily lump factor levels together:
+
+```{r fct_lump, echo = TRUE, eval = FALSE}
+forcats::fct_lump()
+forcats::fct_lump_lowfreq()
+forcats::fct_lump_min()
+forcats::fct_lump_n()
+forcats::fct_lump_prop()
+# if conditioned on another variable
+ifelse(cond, "Other", factor)
+dplyr::case_when(
+  cond1 ~ "level1",
+  cond2 ~ "level2",
+  TRUE ~ "Other"
+)
+```
+
+
+---
+
+# .orange[Case study] .circle.bg-orange.white[7] Anorexia
+
+```{r anorexia-data, include = FALSE}
+data(anorexia, package = "MASS")
+
+df9tab <- table(anorexia$Treat) %>%
+  as.data.frame() %>%
+  rename(Treatment = Var1, Frequency = Freq)
+
+skimr::skim(anorexia)
+```
+
+.panelset[
+.panel[.panel-name[📊]
+
+.grid[
+.item[
+```{r anorexia-plot1}
+ggplot(anorexia, aes(Treat)) +
+  geom_bar() +
+  labs(x = "", y = "Frequency")
+
+```
+
+```{r anorexia-table}
+df9tab %>%
+  knitr::kable() %>%
+  kableExtra::kable_classic(full_width = FALSE)
+```
+
+]
+.item[
+
+**Table or Plot?**
+
+{{content}}
+
+]
+
+
+]
+
+]
+.panel[.panel-name[data]
+.h200.f4.scroll-sign[
+```{r anorexia-data, echo = TRUE, render = knitr::normal_print}
+```
+]]
+.panel[.panel-name[R]
+.f4[
+```{r , ref.label="anorexia-plot1", echo = TRUE, eval = FALSE}
+```
+```{r anorexia-plot2, echo = TRUE, eval = FALSE}
+ggplot(anorexia, aes(Treat)) +
+  stat_count(geom = "point", size = 4) +
+  stat_count(geom = "line", group = 1) +
+  labs(y = "Frequency", x = "")
+```
+
+]]
+]
+
+.f6.footnote[
+
+Hand, D. J., Daly, F., McConway, K., Lunn, D. and Ostrowski, E. eds (1993) A Handbook of Small Data Sets. Chapman & Hall, Data set 285 (p. 229) <br>
+Venables, W. N. & Ripley, B. D. (2002) Modern Applied Statistics with S. Fourth Edition. Springer, New York. ISBN 0-387-95457-0
+
+]
+
+--
+
+* Table for accuracy, plot for visual communication
+
+{{content}}
+
+--
+
+**Why not a point or line?**
+
+```{r anorexia-plot2, fig.height = 2.5}
+```
+
+{{content}}
+
+--
+
+<div class="f4">
+<ul>
+<li>This can be appropriate depending on what you want to communicate </li>
+<li>A barplot occupies more area compared to a point and the area does a better job of communicating size</li>
+<li>A line is suggestive of a trend </li>
+</ul>
+</div>
+
+---
+
+
+# .orange[Case study] .circle.bg-orange.white[8] Titanic
+
+```{r titanic-data, include = FALSE}
+df9 <- as_tibble(Titanic)
+skimr::skim(df9)
+```
+
+.panelset[
+.panel[.panel-name[📊]
+
+.flex[
+.w-50[
+.flex[
+.w-50[
+```{r titanic-plot1, fig.height = 2, fig.width = 4}
+df9 %>%
+  group_by(Class) %>%
+  summarise(total = sum(n)) %>%
+  ggplot(aes(Class, total)) +
+  geom_col(fill = "#ee64a4") +
+  labs(x = "", y = "Frequency")
+
+```
+
+```{r titanic-plot2, fig.height = 2, fig.width = 3}
+df9 %>%
+  group_by(Sex) %>%
+  summarise(total = sum(n)) %>%
+  ggplot(aes(Sex, total)) +
+  geom_col(fill = "#746FB2") +
+  labs(x = "", y = "Frequency")
+
+```
+
+]
+.w-50[
+```{r titanic-plot3, fig.height = 2, fig.width = 3}
+df9 %>%
+  group_by(Age) %>%
+  summarise(total = sum(n)) %>%
+  ggplot(aes(Age, total)) +
+  geom_col(fill = "#C8008F") +
+  labs(x = "", y = "Frequency")
+
+```
+
+```{r titanic-plot4, fig.height = 2, fig.width = 3}
+df9 %>%
+  group_by(Survived) %>%
+  summarise(total = sum(n)) %>%
+  ggplot(aes(Survived, total)) +
+  geom_col(fill = "#795549") +
+  labs(x = "Survived", y = "Frequency")
+
+```
+
+]
+]
+
+
+]
+.w-50[
+
+**What does the graphs for each categorical variable tell us?**
+
+* There were more crews than 1st to 3rd class passengers
+* There were far more males on ship; possibly because majority of crew members were male. You can further explore this by constructing two-way tables or graphs that consider both variables.
+* Most passengers were adults. 
+* More than two-thirds of passengers died. 
+
+]
+
+
+]
+
+]
+.panel[.panel-name[data]
+.h350.f4.scroll-sign[
+```{r titanic-data, echo = TRUE, render = knitr::normal_print}
+```
+]]
+.panel[.panel-name[R]
+.f4.scroll-sign[.s500[
+```{r , ref.label=paste0("titanic-plot", 1:4), echo = TRUE, eval = FALSE}
+```
+]]
+]]
+
+.f5.footnote[
+British Board of Trade (1990), Report on the Loss of the ‘Titanic’ (S.S.). British Board of Trade Inquiry Report (reprint). Gloucester, UK: Allan Sutton Publishing
+]
+
+
+---
+
+
+class: nostripheader middle
+
+# Coloring bars
+
+
+```{r, fig.width = 10}
+g1 <- df9 %>%
+  group_by(Class) %>%
+  summarise(total = sum(n)) %>%
+  ggplot(aes(Class, total)) +
+  geom_col() +
+  labs(x = "", y = "Frequency")
+
+g2 <- df9 %>%
+  group_by(Class) %>%
+  summarise(total = sum(n)) %>%
+  ggplot(aes(Class, total)) +
+  geom_col(fill = "#006DAE") +
+  guides(fill = FALSE) +
+  labs(x = "", y = "Frequency") +
+  scale_fill_discrete_qualitative()
+
+g3 <- df9 %>%
+  group_by(Class) %>%
+  summarise(total = sum(n)) %>%
+  ggplot(aes(Class, total)) +
+  geom_col(aes(fill = Class)) +
+  guides(fill = FALSE) +
+  labs(x = "", y = "Frequency") +
+  scale_fill_discrete_qualitative()
+
+g4 <- df9 %>%
+  group_by(Class) %>%
+  summarise(total = sum(n)) %>%
+  ggplot(aes(Class, total)) +
+  geom_col(aes(fill = Class)) +
+  guides(fill = FALSE) +
+  scale_fill_manual("", values = c("#027C1E", "#649334", "#97A753", "#B9534C")) + # colorspace: terrain2 and heat
+  labs(x = "", y = "Frequency") 
+
+g1 + g2 + g3 + g4 + plot_layout(ncol=4)
+```
+
+--
+
+* Colour here doesn't add information as the x-axis already tells us about the categories, but colouring bars can make it more visually appealing, and provide subtle clues. 
+* If you have too many categories colour won't work well to differentiate the categories. 
+
+---
+
+# .orange[Case study] .circle.bg-orange.white[9] Opinion poll in Ireland Aug 2013
+
+```{r poll-data, include = FALSE}
+df9 <- tibble(
+  party = c(
+    "Fine Gael", "Labour", "Fianna Fail",
+    "Sinn Fein", "Indeps", "Green", "Undecided"
+  ),
+  nos = c(181, 51, 171, 119, 91, 4, 368)
+)
+df9v2 <- df9 %>% filter(party != "Undecided")
+df9
+```
+
+.panelset[
+.panel[.panel-name[📊]
+
+.grid[
+.item[
+```{r poll-plot1, fig.width = 7}
+g9 <- df9 %>%
+  ggplot(aes("", nos, fill = party)) +
+  geom_col(color = "black") +
+  labs(y = "", x = "") +
+  coord_polar("y") +
+  theme(
+    axis.line = element_blank(),
+    axis.line.y = element_blank(),
+    axis.text = element_blank(),
+    panel.grid.major = element_blank()
+  ) +
+  scale_fill_discrete_qualitative(name = "Party")
+g9
+```
+
+```{r poll-plot2, fig.width = 7}
+g9 %+% df9v2 +
+  # below is needed to keep the same color scheme as before
+  scale_fill_manual(values = qualitative_hcl(7)[1:6])
+
+```
+
+]
+.item[
+
+* Pie chart is popular in mainstream media but are not generally recommended as people are generally poor at comparing angles.
+* 3D pie charts should definitely be avoided!
+* Here you can see that there are many people that are "Undecided" for which political party to support and failing to account for this paints a different picture. 
+
+]
+
+
+]
+
+]
+.panel[.panel-name[data]
+.f4[
+```{r poll-data, echo = TRUE, render = knitr::normal_print}
+```
+]]
+.panel[.panel-name[R]
+.f4[
+```{r , ref.label=paste0("poll-plot", 1:2), echo = TRUE, eval = FALSE}
+```
+]]]
+
+
+
+
+---
+
+class: middle
+
+# Piechart is a stacked barplot just with a transformed coordinate system
+
+--
+
+```{r barplot, echo = TRUE, fig.height = 2, fig.width = 3}
+df <- data.frame(var = c("A", "B", "C"), perc = c(40, 40, 20))
+g <- ggplot(df, aes("", perc, fill = var)) +
+  geom_col()
+g
+```
+--
+
+```{r piechart, echo = TRUE, fig.height = 2, fig.width = 3}
+g + coord_polar("y")
+```
+
+---
+
+class: middle
+
+# Roseplot is a barplot just with a transformed coordinate system
+
+--
+
+```{r nonstacked-barplot, echo = TRUE, fig.height = 2, fig.width = 10}
+dummy <- data.frame(
+  var = LETTERS[1:20],
+  n = round(rexp(20, 1 / 100))
+)
+g <- ggplot(dummy, aes(var, n)) +
+  geom_col(fill = "pink", color = "black")
+g
+```
+--
+
+```{r roseplot, echo = TRUE, fig.height = 2, fig.width = 3}
+g + coord_polar("x") + theme_void()
+```
+
+---
+# Visual inference
+
+.flex[
+
+.item.w-50[
+
+Typical plot description:
+
+
+```{r eval=FALSE, echo=TRUE}
+ggplot(data, aes(x=var1)) +
+  geom_col()
+
+ggplot(data, aes(x=var1)) +
+  geom_bar()
+```
+
+<br><br>
+*Is the distribution consistent with a sample from a binomial distribution with a given p?*
+
+]
+.item.w-5[
+.white[space]
+]
+.item.w-45[
+
+Potential simulation method from binomial
+
+```{r eval=FALSE, echo=TRUE}
+# Only one option
+null_dist("var1", "binom", 
+  list(size=n, p=phat))
+```
+]
+]
+
+---
+# Lineup of tuberculosis count between sexes
+
+.panelset[
+.panel[.panel-name[📊]
+```{r tb-lineup, fig.width=10, fig.height=4, out.width="80%"}
+library(nullabor)
+set.seed(252)
+tb_oz_2012 <- tb %>%
+  filter(iso3 == "AUS",
+         year == 2012) %>%
+  select(iso3, year, new_sp_m04:new_ep_m65) %>%
+  pivot_longer(cols=new_sp_m04:new_ep_m65, 
+               names_to = "var", 
+               values_to = "count") %>%
+  separate(var, into=c("new", "type", "sexage")) %>%
+  select(-new) %>%
+  filter(!(sexage %in% c("sexunk014", "sexunk04", 
+                         "sexunk15plus", "sexunk514",
+                         "f15plus", "m15plus"))) %>%
+  group_by(sexage) %>%
+  summarise(count = sum(count, na.rm=TRUE)) %>%
+  mutate(sex=str_sub(sexage, 1, 1),
+         age=str_sub(sexage, 2, str_length(sexage))) %>%
+  group_by(sex) %>%
+  summarise(count=sum(count)) %>%
+  ungroup() %>%
+  mutate(sex01 = ifelse(sex=="m", 0, 1)) %>%
+  select(-sex)
+
+ggplot(lineup(null_dist("count", "binom", 
+                        list(size=sum(tb_oz_2012$count),
+                               p=0.5)), 
+              tb_oz_2012, n=10),
+       aes(x=sex01, y=count)) +
+  geom_col() +
+  facet_wrap(~.sample, ncol=5) +
+  theme(axis.text = element_blank(),
+        axis.title = element_blank(),
+        panel.grid.major = element_blank())
+```
+
+.f5[**Note**: This is nothing more than you can learn from a conventional hypothesis test of $$H_0: p=0.5$$. .monash-orange2[**Stay tuned for more interesting visual inference lineups in coming weeks!**]]
+]
+.panel[.panel-name[R]
+.scroll-sign[.s500.f5[
+```{r ref.label="tb-lineup", eval=FALSE, echo=TRUE}
+```
+]]
+]
+]
+
+---
+
+# Take away messages
+
+.flex[
+.w-70.f2[
+
+
+
+<ul class="fa-ul">
+{{content}}
+</ul>
+
+
+]
+]
+
+--
+
+<li><span class="fa-li"><i class="fas fa-paper-plane"></i></span>Again, be prepared to do multiple plots</li>
+{{content}}
+--
+
+<li><span class="fa-li"><i class="fas fa-paper-plane"></i></span>Changing bins or binwidth/bandwidth in histogram, violin or density plots can paint a different picture</li>
+{{content}}
+--
+
+<li><span class="fa-li"><i class="fas fa-paper-plane"></i></span>Consider different representations of categorical variables (reordering meaningfully, lumping low frequencies together, plot or table, pie or barplot, missing categories)</li>
+
+---
+# Resources and Acknowledgement
+
+- Slides originally written by Emi Tanaka and constructed with [`xaringan`](https://github.com/yihui/xaringan), [remark.js](https://remarkjs.com), [`knitr`](http://yihui.name/knitr), and [R Markdown](https://rmarkdown.rstudio.com).
+
+---
+
+```{r endslide, child="assets/endslide.Rmd"}
+```

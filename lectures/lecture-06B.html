@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>ETC5521: Exploratory Data Analysis</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Di Cook" />
+    <script src="lib/header-attrs-2.22/header-attrs.js"></script>
+    <link href="lib/remark-css-0.0.1/ninjutsu.css" rel="stylesheet" />
+    <script src="lib/kePrint-0.0.1/kePrint.js"></script>
+    <link href="lib/lightable-0.0.1/lightable.css" rel="stylesheet" />
+    <link href="lib/countdown-0.4.0/countdown.css" rel="stylesheet" />
+    <script src="lib/countdown-0.4.0/countdown.js"></script>
+    <script src="assets/panelset-modified.js"></script>
+
+    <!--
+    <script defer src="assets/all.min.js"></script>
+
+    Need below to enable css contents
+
+    <script>
+      window.FontAwesomeConfig = {
+        searchPseudoElements: true
+      }
+    </script>
+
+    -->
+    <link rel="stylesheet" href="assets/font-awesome-all.css" type="text/css" />
+    <link rel="stylesheet" href="assets/tachyons-addon.css" type="text/css" />
+    <link rel="stylesheet" href="assets/animate.css" type="text/css" />
+    <link rel="stylesheet" href="assets/boxes.css" type="text/css" />
+    <link rel="stylesheet" href="assets/table.css" type="text/css" />
+    <link rel="stylesheet" href="assets/styles.css" type="text/css" />
+    <link rel="stylesheet" href="assets/monash-brand.css" type="text/css" />
+    <link rel="stylesheet" href="assets/monash-fonts.css" type="text/css" />
+    <link rel="stylesheet" href="assets/slide-types.css" type="text/css" />
+    <link rel="stylesheet" href="assets/panelset-modified.css" type="text/css" />
+    <link rel="stylesheet" href="assets/scroll.css" type="text/css" />
+    <link rel="stylesheet" href="assets/datatables.css" type="text/css" />
+    <link rel="stylesheet" href="assets/di2.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+
+
+
+
+
+
+class: middle center hide-slide-number monash-bg-gray80
+
+
+
+
+
+.info-box.w-50.bg-white[
+These slides are viewed best by Chrome or Firefox and occasionally need to be refreshed if elements did not load properly. See &lt;a href=lecture-06B.pdf&gt;here for the PDF &lt;i class="fas fa-file-pdf"&gt;&lt;/i&gt;&lt;/a&gt;. 
+]
+
+&lt;br&gt;
+
+.white[Press the **right arrow** to progress to the next slide!]
+
+
+
+---
+
+class: title-slide
+count: false
+background-image: url("images/bg-12.png")
+
+# .monash-blue[ETC5521: Exploratory Data Analysis]
+
+&lt;h1 class="monash-blue" style="font-size: 30pt!important;"&gt;&lt;/h1&gt;
+
+&lt;br&gt;
+
+&lt;h2 style="font-weight:900!important;"&gt;Exploring bivariate dependencies&lt;/h2&gt;
+
+.bottom_abs.width100[
+
+Lecturer: *Di Cook*
+
+
+
+&lt;i class="fas fa-envelope"&gt;&lt;/i&gt;  ETC5521.Clayton-x@monash.edu
+
+&lt;i class="fas fa-calendar-alt"&gt;&lt;/i&gt; Week 6 - Session 2
+
+&lt;br&gt;
+
+]
+
+
+
+
+---
+class: transition
+
+# Numerical measures of association
+
+---
+# Correlation
+
+- Correlation between variables `\(x_1\)` and `\(x_2\)`, with `\(n\)` observations in each.
+
+`$$r = \frac{\sum_{i=1}^n (x_{i1}-\bar{x}_1)(x_{i2}-\bar{x}_2)}{\sqrt{\sum_{i=1}^n(x_{i1}-\bar{x}_1)^2\sum_{i=1}^n(x_{i2}-\bar{x}_2)^2}} = \frac{\mbox{covariance}(x_1, x_2)}{(n-1)s_{x_1}s_{x_2}}$$`
+- Test for statistical significance, whether population correlation could be 0 based on observed `\(r\)`, using a `\(t_{n-2}\)` distribution:
+
+`$$t=\frac{r}{\sqrt{1-r^2}}\sqrt{n-2}$$`
+---
+
+.flex[
+.item[
+&lt;img src="images/lecture-06B/unnamed-chunk-4-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+.item[
+
+```r
+cor(d1$x, d1$y)
+```
+
+```
+## [1] 0.5228401
+```
+
+
+```r
+cor.test(d1$x, d1$y)
+```
+
+```
+## 
+## 	Pearson's product-moment correlation
+## 
+## data:  d1$x and d1$y
+*## t = 8.6306, df = 198, p-value = 1.993e-15
+## alternative hypothesis: true correlation is not equal to 0
+## 95 percent confidence interval:
+##  0.4141406 0.6168362
+## sample estimates:
+##       cor 
+## 0.5228401
+```
+]
+]
+
+---
+
+.flex[
+.item[
+&lt;img src="images/lecture-06B/unnamed-chunk-7-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+.item[
+
+```r
+cor(d2$x, d2$y)
+```
+
+```
+## [1] -0.04993755
+```
+
+
+```r
+cor.test(d2$x, d2$y)
+```
+
+```
+## 
+## 	Pearson's product-moment correlation
+## 
+## data:  d2$x and d2$y
+*## t = -0.70356, df = 198, p-value = 0.4825
+## alternative hypothesis: true correlation is not equal to 0
+## 95 percent confidence interval:
+##  -0.18738032  0.08942303
+## sample estimates:
+##         cor 
+## -0.04993755
+```
+]
+]
+
+---
+
+.flex[
+.w-30[
+&lt;img src="images/lecture-06B/unnamed-chunk-10-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+.w-30[
+All observations
+
+
+```
+## $estimate
+*##       cor 
+*## 0.2994041 
+## 
+## $statistic
+##        t 
+## 4.426682 
+## 
+*## $p.value
+*## [1] 1.576086e-05
+```
+]
+
+.w-5.white[
+gap
+]
+
+.w-30[
+Without outlier
+
+
+```
+## $estimate
+*##         cor 
+*## -0.01173776 
+## 
+## $statistic
+##          t 
+## -0.1651764 
+## 
+*## $p.value
+*## [1] 0.8689737
+```
+]
+]
+
+
+---
+# Perceiving correlation
+
+.panelset[
+.panel[.panel-name[🖼️]
+
+.monash-orange2[Let's play a game:] Guess the correlation!
+
+&lt;br&gt;
+&lt;img src="images/lecture-06B/simcor-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+]
+.panel[.panel-name[answers]
+
+&lt;img src="images/lecture-06B/unnamed-chunk-13-1.png" width="40%" style="display: block; margin: auto;" /&gt;
+
+&lt;br&gt;
+&lt;br&gt;
+
+Generally, people don't do very well at this task. Typically people under-estimate `\(r\)` from scatterplots, particularly when it is around 0.4-0.7. The variation in a scatterplot perceptually doesn't vary is not linearly with `\(r\)`.
+
+When someone says .monash-blue2[*correlation is 0.5* it sounds impressive]. BUT when someone shows you a .monash-blue2[scatterplot of data that has correlation 0.5], you will say that's a .monash-blue2[weak relationship.]
+]
+.panel[.panel-name[R]
+.s400[
+
+```r
+set.seed(7777)
+vc &lt;- matrix(c(1, 0, 0, 1), ncol = 2, byrow = T)
+d &lt;- as_tibble(rmvnorm(500, sigma = vc))
+p1 &lt;- ggplot(d, aes(x = V1, y = V2)) +
+  geom_point() +
+  theme_void() +
+  theme(
+    aspect.ratio = 1,
+    plot.background = element_rect(fill = "gray90")
+  )
+vc &lt;- matrix(c(1, 0.4, 0.4, 1), ncol = 2, byrow = T)
+d &lt;- as_tibble(rmvnorm(500, sigma = vc))
+p2 &lt;- ggplot(d, aes(x = V1, y = V2)) +
+  geom_point() +
+  theme_void() +
+  theme(
+    aspect.ratio = 1,
+    plot.background = element_rect(fill = "gray90")
+  )
+vc &lt;- matrix(c(1, 0.6, 0.6, 1), ncol = 2, byrow = T)
+d &lt;- as_tibble(rmvnorm(500, sigma = vc))
+p3 &lt;- ggplot(d, aes(x = V1, y = V2)) +
+  geom_point() +
+  theme_void() +
+  theme(
+    aspect.ratio = 1,
+    plot.background = element_rect(fill = "gray90")
+  )
+vc &lt;- matrix(c(1, 0.8, 0.8, 1), ncol = 2, byrow = T)
+d &lt;- as_tibble(rmvnorm(500, sigma = vc))
+p4 &lt;- ggplot(d, aes(x = V1, y = V2)) +
+  geom_point() +
+  theme_void() +
+  theme(
+    aspect.ratio = 1,
+    plot.background = element_rect(fill = "gray90")
+  )
+vc &lt;- matrix(c(1, -0.2, -0.2, 1), ncol = 2, byrow = T)
+d &lt;- as_tibble(rmvnorm(500, sigma = vc))
+p5 &lt;- ggplot(d, aes(x = V1, y = V2)) +
+  geom_point() +
+  theme_void() +
+  theme(
+    aspect.ratio = 1,
+    plot.background = element_rect(fill = "gray90")
+  )
+vc &lt;- matrix(c(1, -0.5, -0.5, 1), ncol = 2, byrow = T)
+d &lt;- as_tibble(rmvnorm(500, sigma = vc))
+p6 &lt;- ggplot(d, aes(x = V1, y = V2)) +
+  geom_point() +
+  theme_void() +
+  theme(
+    aspect.ratio = 1,
+    plot.background = element_rect(fill = "gray90")
+  )
+vc &lt;- matrix(c(1, -0.7, -0.7, 1), ncol = 2, byrow = T)
+d &lt;- as_tibble(rmvnorm(500, sigma = vc))
+p7 &lt;- ggplot(d, aes(x = V1, y = V2)) +
+  geom_point() +
+  theme_void() +
+  theme(
+    aspect.ratio = 1,
+    plot.background = element_rect(fill = "gray90")
+  )
+vc &lt;- matrix(c(1, -0.9, -0.9, 1), ncol = 2, byrow = T)
+d &lt;- as_tibble(rmvnorm(500, sigma = vc))
+p8 &lt;- ggplot(d, aes(x = V1, y = V2)) +
+  geom_point() +
+  theme_void() +
+  theme(
+    aspect.ratio = 1,
+    plot.background = element_rect(fill = "gray90")
+  )
+grid.arrange(p1, p2, p3, p4, p5, p6, p7, p8, ncol = 4)
+```
+]
+.scroll-sign[
+&lt;br&gt;
+]
+]
+]
+
+---
+# Robust correlation measures 1/2
+
+- Spearman (based on ranks)
+    - Sort each variable, and return rank (of actual value)
+    - Compute correlation between ranks of each variable
+
+.pull-left[
+
+```
+## # A tibble: 6 × 4
+##       x     y    xr    yr
+##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1   0.7  -1.7     5     1
+## 2   0.5   1.1     4     5
+## 3  -0.6   0.3     2     3
+## 4  -0.2  -0.9     3     2
+## 5  -1.7   0.4     1     4
+## 6  10    10       6     6
+```
+].pull-right[
+
+```r
+cor(df$x, df$y)
+```
+
+```
+## [1] 0.935397
+```
+
+```r
+cor(df$xr, df$yr)
+```
+
+```
+## [1] 0.2
+```
+
+```r
+cor(df$x, df$y, method = "spearman")
+```
+
+```
+## [1] 0.2
+```
+
+]
+
+---
+# Robust correlation measures 2/2
+
+- Kendall `\(\tau\)` (based on comparing pairs of observations)
+    - Sort each variable, and return rank (of actual value)
+    - For all pairs of observations `\((x_i, y_i), (x_j, y_j)\)`, determine  if **concordant**, `\(x_i &lt; x_j, y_i &lt; y_j\)` or `\(x_i &gt; x_j, y_i &gt; y_j\)`, or **discordant**, `\(x_i &lt; x_j, y_i &gt; y_j\)` or `\(x_i &gt; x_j, y_i &lt; y_j\)`.
+
+`$$\tau = \frac{n_c-n_d}{\frac12 n(n-1)}$$`
+
+.pull-left[
+&lt;img src="images/lecture-06B/unnamed-chunk-17-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+]
+.pull-right[
+
+```r
+cor(df$x, df$y)
+```
+
+```
+## [1] 0.935397
+```
+
+```r
+cor(df$x, df$y, method = "kendall")
+```
+
+```
+## [1] 0.06666667
+```
+
+]
+
+---
+# Comparison of correlation measures
+
+
+
+&lt;table class="table lightable-classic" style='width: auto !important; margin-left: auto; margin-right: auto; font-family: "Arial Narrow", "Source Sans Pro", sans-serif; margin-left: auto; margin-right: auto;'&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; sample &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; corr &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; spearman &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; kendall &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; &lt;img src="images/lecture-05B/diffscatter-1.png" height="100px"&gt; &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.523 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.512 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.355 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; &lt;img src="images/lecture-05B/diffscatter-2.png" height="100px"&gt; &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.050 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.087 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.073 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; &lt;img src="images/lecture-05B/diffscatter-3.png" height="100px"&gt; &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.299 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.023 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.014 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+class: transition middle
+
+# Scatterplot case studies
+
+---
+#  .orange[Case study] .bg-orange.circle[2] Movies
+
+.panelset[
+.panel[.panel-name[🖼️]
+.flex[
+.w-50[
+&lt;img src="images/lecture-06B/movies-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+]
+.w-50[
+- `votes`: Number of IMDB users who rated this movie
+- `rating`: Average IMDB user rating
+
+&lt;br&gt;
+&lt;br&gt;
+Describe the relationship between rating and votes. 
+]
+]
+]
+.panel[.panel-name[learn]
+.grid[
+.item[
+- Odd pattern, almost looks like an "r"
+- No films with lots of votes and low rating
+- No film with lots of votes has rating close to maximum possible: **barrier?**
+- Films with very high ratings only have a few votes
+- Generally, rating appears to increase as votes increases (its hard to really read this with so few points though)
+- A few films with really large number of votes: **outliers?** or just **skewness?**
+- Films with few votes have ratings that span the range of the scale.
+]
+.item[
+Would you say this is positive, linear, moderate?
+
+Or positive, non-linear, and moderate? Or weak?
+
+In some sense, these descriptions are meaningless, here.
+
+&lt;br&gt;
+What about causation? association? outliers?  clusters? gaps? barrier? conditional relationships?
+
+&lt;br&gt;
+
+.monash-blue2[These descriptive help to describe relationships generally, but it is important to convert them into the context of the (variables in the) data.]
+
+.monash-orange2[BUT, BUT there is a skewness in votes that needs fixing before assessing the relationship.]
+]
+]
+]
+.panel[.panel-name[R]
+
+
+```r
+ggplot(movies, aes(x = votes, y = rating)) +
+  geom_point() +
+  scale_y_continuous("rating", breaks = seq(0, 10, 2))
+```
+]
+]
+
+<div class="countdown clock" id="timer_65a7bead" data-update-every="1" tabindex="0" style="right:0;bottom:0;">
+<div class="countdown-controls"><button class="countdown-bump-down">&minus;</button><button class="countdown-bump-up">&plus;</button></div>
+<code class="countdown-time"><span class="countdown-digits minutes">01</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
+</div>
+
+---
+#  .orange[Case study] .bg-orange.circle[2] Movies
+
+.panelset[
+.panel[.panel-name[🖼️]
+.flex[
+.w-50[
+&lt;img src="images/lecture-06B/logmovies-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+]
+.w-50[
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+🤔 Something funny happens, right at 1000 votes
+&lt;br&gt;
+&lt;br&gt;
+
+Some positive association between two variables only for large number of votes.
+]
+]
+]
+.panel[.panel-name[R]
+
+
+```r
+ggplot(movies, aes(x = votes, y = rating)) +
+  geom_point(alpha = 0.1) +
+  geom_smooth(se = F, colour = "orange", size = 2) +
+  scale_x_log10() +
+  scale_y_continuous("rating", breaks = seq(0, 10, 2))
+```
+
+*Note*: Used .monash-orange2[transparency] (because there is a lot of data) and a .monash-orange2[loess smooth] (because I am interested in assessing the trend between votes and rating).
+
+&lt;br&gt;
+
+Correlation between .monash-blue2[raw variables] is 0.1 &lt;br&gt; and between .monash-blue2[transformed] `log(votes)`and `rating` is 0.07. Which more accurately reflects the relationship?
+
+]
+]
+
+---
+#  .orange[Case study] .bg-orange.circle[3] Cars
+
+.panelset[
+.panel[.panel-name[🖼️]
+.flex[
+.w-50[
+&lt;img src="images/lecture-06B/cars-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+]
+.w-50[
+- `mpg`: Miles/(US) gallon
+- `hp`: Gross horsepower
+
+&lt;br&gt;
+&lt;br&gt;
+Describe the relationship between horsepower and mpg. 
+]
+]
+]
+.panel[.panel-name[learn]
+
+&lt;br&gt;
+&lt;br&gt;
+
+- negative: as horsepower increases fuel efficiency is worse
+- nonlinear: for lower horse power the decrease in efficieny is more
+- strong: very little variation between cars, looks fundamentally like a physics problem
+- outlier: one car with high horse power has unusually high efficiency
+
+]
+.panel[.panel-name[R]
+
+
+```r
+data(mtcars)
+ggplot(mtcars, aes(x = hp, y = mpg)) +
+  geom_point() +
+  geom_smooth(colour = "forestgreen", se = F)
+```
+]
+]
+
+---
+#  .orange[Case study] .bg-orange.circle[3] Cars
+
+.panelset[
+.panel[.panel-name[🖼️]
+.flex[
+.w-50[
+&lt;img src="images/lecture-06B/logcars-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+]
+.w-50[
+- `mpg`: Miles/(US) gallon
+- `hp`: Gross horsepower
+
+&lt;br&gt;
+&lt;br&gt;
+Log transforming `mpg` linearised the relationship between horsepower and mpg. 
+
+&lt;br&gt;
+&lt;br&gt;
+
+.monash-green2[Need to also remove the outlier, because it is a little influential (swinging the line towards it).]
+]
+]
+]
+.panel[.panel-name[R]
+
+
+```r
+ggplot(mtcars, aes(x = hp, y = mpg)) +
+  geom_point() +
+* scale_y_log10("log mpg") +
+  geom_smooth(method = "lm", colour = "forestgreen", se = F) +
+  geom_smooth(data = filter(mtcars, hp &lt; 300), method = "lm", colour = "orangered", se = F, lty = 2)
+```
+
+
+Correlation between .monash-blue2[raw variables] is -0.78 &lt;br&gt; and between .monash-blue2[transformed] `log(mpg)` and `hp` is -0.85. Which more accurately reflects the relationship?
+
+]
+]
+---
+class: transition middle
+
+# Transformations
+
+for skewness, heteroskedasticity and linearising relationships, and to emphasize association
+
+---
+# Circle of transformations for linearising
+
+.grid[
+.item[ 
+&lt;img src="images/lecture-06B/circleoftrans-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+]
+.item[
+Remember the power ladder: 
+
+-1, 0, 1/3, 1/2, .monash-orange2[1], 2, 3, 4 
+
+&lt;br&gt;
+
+1.Look at the shape of the relationship. 
+2.Imagine this to be a number plane, and depending on which quadrant the shape falls in, you either transform `\(x\)` or `\(y\)`, up or down the ladder: `+,+` both up; `+,-` x up, y down; `-,-` both down;  `-,+` x down, y up
+    
+&lt;br&gt;
+
+If there is heteroskedasticity, try transforming `\(y\)`, may or may not help
+
+]
+]
+
+---
+class: transition middle
+
+# Scatterplot case studies
+
+---
+#  .orange[Case study] .bg-orange.circle[4] Soils
+
+
+.flex[
+.w-50[
+&lt;img src="images/lecture-06B/baker-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+]
+.w-50[
+Interplay between skewness and association
+
+Data is from a soil chemical analysis of a farm field in Iowa. Is there a relationship between Yield and Boron?
+
+&lt;br&gt;
+You can get a marginal plot of each variable added to the scatterplot using `ggMarginal`. This is useful for assessing the skewness in each variable. 
+
+&lt;br&gt;
+Boron is right-skewed Yield is left-skewed. With skewed distributions in marginal variables it is .monash-orange2[hard] to assess the relationship between the two. Make a transformation to fix, first.
+]
+]
+---
+#  .orange[Case study] .bg-orange.circle[4] Soils
+
+.flex[
+.w-50[
+&lt;img src="images/lecture-06B/transfbaker-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+]
+.w-50[
+
+&lt;br&gt;
+&lt;br&gt;
+
+
+```r
+p &lt;- ggplot(
+  baker,
+  aes(x = B, y = Corn97BU^2)
+*) +
+  geom_point() +
+  xlab("log Boron (ppm)") +
+  ylab("Corn Yield^2 (bushells)") +
+* scale_x_log10()
+*ggMarginal(p, type = "density")
+```
+
+]
+]
+
+---
+#  .orange[Case study] .bg-orange.circle[4] Soils
+
+
+.flex[
+.w-50[
+&lt;img src="images/lecture-06B/bakeriron-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+]
+.w-50[
+
+&lt;br&gt;
+Lurking variable?
+
+&lt;br&gt;
+&lt;br&gt;
+
+
+```r
+p &lt;- ggplot(
+  baker,
+  aes(x = Fe, y = Corn97BU^2)
+) +
+  geom_density2d(colour = "orange") +
+  geom_point() +
+* xlab("Iron (ppm)") +
+  ylab("Corn Yield^2 (bushells)")
+ggMarginal(p, type = "density")
+```
+
+]
+]
+
+---
+#  .orange[Case study] .bg-orange.circle[4] Soils
+
+.flex[
+.w-40[
+&lt;img src="images/lecture-06B/bakerironca-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+.w-60[
+
+Colour high calcium (&gt;5200ppm) calcium values
+
+.f5[
+
+```r
+ggplot(baker, aes(
+  x = Fe, y = Corn97BU^2,
+* colour = ifelse(Ca &gt; 5200,
+    "high", "low"
+  )
+*)) +
+  geom_point() +
+  xlab("Iron (ppm)") +
+  ylab("Corn Yield^2 (bushells)") +
+  scale_colour_brewer("", palette = "Dark2") +
+  theme(
+    aspect.ratio = 1,
+    legend.position = "bottom",
+    legend.direction = "horizontal"
+  )
+```
+]
+
+If calcium levels in the soil are high, yield is consistently high. If calcium levels are low, then there is a positive relationship between yield and iron, with higher iron leading to higher yields.
+
+
+]
+]
+---
+#  .orange[Case study] .bg-orange.circle[5] COVID-19
+
+
+.panelset[
+.panel[.panel-name[🖼️]
+
+
+
+&lt;img src="images/lecture-06B/usacovid-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+
+]
+.panel[.panel-name[info]
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;
+Bubble plots, size of point is mapped to another variable.
+
+This bubble plot here shows total count of COVID-19 incidence (as of Aug 30, 2020) for every county in the USA, inspired by the [New York Times coverage](https://www.nytimes.com/news-event/coronavirus).
+
+]
+.panel[.panel-name[R]
+
+
+```r
+load("../data/nyt_covid.rda")
+usa &lt;- map_data("state")
+ggplot() +
+  geom_polygon(
+    data = usa,
+    aes(x = long, y = lat, group = group),
+    fill = "grey90", colour = "white"
+  ) +
+  geom_point(
+    data = nyt_county_total,
+    aes(x = lon, y = lat, size = cases),
+    colour = "red", shape = 1
+  ) +
+  geom_point(
+    data = nyt_county_total,
+    aes(x = lon, y = lat, size = cases),
+    colour = "red", fill = "red", alpha = 0.1, shape = 16
+  ) +
+  scale_size("", range = c(1, 30)) +
+  theme_map() +
+  theme(legend.position = "none")
+```
+]
+]
+
+---
+# Scales matter
+
+.grid[
+.item[
+&lt;br&gt;
+&lt;br&gt;
+
+&lt;img src="images/lecture-06B/unnamed-chunk-27-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+]
+.item[
+&lt;br&gt;
+&lt;br&gt;
+Where has COVID-19 hit the hardest?
+&lt;br&gt;
+
+Where are there more people?
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+
+This plot tells you NOTHING except where the population centres are in the USA. To understand relative incidence/risk, report COVID numbers relative the population. For example,  .monash-orange2[number of cases per 100,000 people].
+]
+]
+
+---
+class: transition middle
+
+# Beyond quantitative variables
+
+---
+# When variables are not quantitative
+
+&gt; What do you do if the variables are not continuous/quantitative?
+
+The type of variable determines the choice of mapping.
+
+- Continuous and categorical `\(\longrightarrow\)` side-by-side boxplots, side-by-side density plots
+- Both categorical `\(\longrightarrow\)` faceted bar charts, stacked bar charts, mosaic plots, double decker plots
+
+&lt;br&gt; &lt;br&gt;
+
+&gt; We'll see more examples soon.
+---
+class: transition middle
+
+# Paradoxes
+
+---
+# Simpsons paradox
+
+There is an additional variable, which if used for conditioning, changes the association between the variables, you have a .monash-orange2[paradox] 🙃.
+
+
+
+.grid[
+.item[
+&lt;img src="images/lecture-06B/scat-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+]
+.item[
+&lt;img src="images/lecture-06B/scatcol-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+]
+
+]
+
+
+---
+# Simpsons paradox: famous example
+
+&lt;br&gt;
+&lt;img src="images/lecture-06B/berkeley-1.png" width="90%" style="display: block; margin: auto;" /&gt;
+
+Did Berkeley .monash-orange2[discriminate] against female applicants?
+
+.footnote[Example from Unwin (2015)]
+
+---
+# Simpsons paradox: famous example
+
+&lt;img src="images/lecture-06B/berkeleydd-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+Based on separately examining each department, there is .monash-orange2[no evidence of discrimination] against female applicants.
+
+.footnote[Example from Unwin (2015)]
+
+---
+class: transition middle
+
+# Is what you see really association?
+
+---
+# Checking association with visual inference
+
+.panelset[
+.panel[.panel-name[Soils]
+
+&lt;img src="images/lecture-06B/soils-lineup-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+]
+.panel[.panel-name[R]
+
+```r
+ggplot(
+  lineup(null_permute("Corn97BU"), baker, n = 12),
+  aes(x = B, y = Corn97BU)
+) +
+  geom_point() +
+  facet_wrap(~.sample, ncol = 4)
+```
+
+11 of the panels have had the association broken by permuting one variable. .monash-blue2[There is no association] in these data sets, and hence plots. Does the data plot stand out as being different from the null (no association) plots?
+
+]
+.panel[.panel-name[Olympics]
+
+&lt;img src="images/lecture-06B/oly-lineup-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+]
+.panel[.panel-name[R]
+
+.f5[
+
+```r
+data(oly12, package = "VGAMdata")
+oly12_sub &lt;- oly12 %&gt;%
+  filter(Sport %in% c(
+    "Swimming", "Archery",
+    "Hockey", "Tennis"
+  )) %&gt;%
+  filter(Sex == "F") %&gt;%
+  mutate(Sport = fct_drop(Sport), Sex = fct_drop(Sex))
+
+ggplot(
+  lineup(null_permute("Sport"), oly12_sub, n = 12),
+  aes(x = Height, y = Weight, colour = Sport)
+) +
+  geom_smooth(method = "lm", se = FALSE) +
+  scale_colour_brewer("", palette = "Dark2") +
+  facet_wrap(~.sample, ncol = 4) +
+  theme(legend.position = "none")
+```
+]
+
+11 of the panels have had the association broken by permuting the Sport label. .monash-blue2[There is no difference in the association between weight and height across sports] in these data sets, and hence plots. Does the data plot stand out as being different from the null (no association difference between sports) plots?
+
+]
+]
+
+---
+# Resources
+
+- Friendly and Denis "Milestones in History of Thematic Cartography, Statistical Graphics and Data Visualisation" available at http://www.datavis.ca/milestones/
+- Unwin (2015) [Graphical Data Analysis with R](http://www.gradaanwr.net)
+- Graphics using [ggplot2](https://ggplot2.tidyverse.org)
+- Wilke (2019) Fundamentals of Data Visualization https://clauswilke.com/dataviz/
+
+
+
+---
+
+
+
+
+background-size: cover
+class: title-slide
+background-image: url("images/bg-12.png")
+
+&lt;a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"&gt;&lt;img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /&gt;&lt;/a&gt;&lt;br /&gt;This work is licensed under a &lt;a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"&gt;Creative Commons Attribution-ShareAlike 4.0 International License&lt;/a&gt;.
+
+
+.bottom_abs.width100[
+
+Lecturer: *Di Cook*
+
+
+
+&lt;i class="fas fa-envelope"&gt;&lt;/i&gt;  ETC5521.Clayton-x@monash.edu
+
+&lt;i class="fas fa-calendar-alt"&gt;&lt;/i&gt; Week 6 - Session 2
+
+&lt;br&gt;
+
+]
+
+
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="lib/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "magula",
+"highlightLanguage": "r",
+"highlightLines": true,
+"highlightSpans": false,
+"countIncrementalSlides": false,
+"slideNumberFormat": "%current%/%total%",
+"navigation": {
+"scroll": false,
+"touch": true,
+"click": false
+},
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'lib/mathjax-local/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

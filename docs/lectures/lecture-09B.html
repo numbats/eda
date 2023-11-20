@@ -1,0 +1,1452 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>ETC5521: Exploratory Data Analysis</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Di Cook" />
+    <script src="lib/header-attrs-2.22/header-attrs.js"></script>
+    <link href="lib/remark-css-0.0.1/ninjutsu.css" rel="stylesheet" />
+    <script src="assets/panelset-modified.js"></script>
+
+    <!--
+    <script defer src="assets/all.min.js"></script>
+
+    Need below to enable css contents
+
+    <script>
+      window.FontAwesomeConfig = {
+        searchPseudoElements: true
+      }
+    </script>
+
+    -->
+    <link rel="stylesheet" href="assets/font-awesome-all.css" type="text/css" />
+    <link rel="stylesheet" href="assets/tachyons-addon.css" type="text/css" />
+    <link rel="stylesheet" href="assets/animate.css" type="text/css" />
+    <link rel="stylesheet" href="assets/boxes.css" type="text/css" />
+    <link rel="stylesheet" href="assets/table.css" type="text/css" />
+    <link rel="stylesheet" href="assets/styles.css" type="text/css" />
+    <link rel="stylesheet" href="assets/monash-brand.css" type="text/css" />
+    <link rel="stylesheet" href="assets/monash-fonts.css" type="text/css" />
+    <link rel="stylesheet" href="assets/slide-types.css" type="text/css" />
+    <link rel="stylesheet" href="assets/panelset-modified.css" type="text/css" />
+    <link rel="stylesheet" href="assets/scroll.css" type="text/css" />
+    <link rel="stylesheet" href="assets/datatables.css" type="text/css" />
+    <link rel="stylesheet" href="assets/di4.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+
+
+
+
+
+
+
+class: middle center hide-slide-number monash-bg-gray80
+
+
+
+
+
+.info-box.w-50.bg-white[
+These slides are viewed best by Chrome or Firefox and occasionally need to be refreshed if elements did not load properly. See &lt;a href=lecture-09B.pdf&gt;here for the PDF &lt;i class="fas fa-file-pdf"&gt;&lt;/i&gt;&lt;/a&gt;. 
+]
+
+&lt;br&gt;
+
+.white[Press the **right arrow** to progress to the next slide!]
+
+
+
+---
+
+class: title-slide
+count: false
+background-image: url("images/bg-12.png")
+
+# .monash-blue[ETC5521: Exploratory Data Analysis]
+
+&lt;h1 class="monash-blue" style="font-size: 30pt!important;"&gt;&lt;/h1&gt;
+
+&lt;br&gt;
+
+&lt;h2 style="font-weight:900!important;"&gt;Exploring data having a space and time context&lt;/h2&gt;
+
+.bottom_abs.width100[
+
+Lecturer: *Di Cook*
+
+
+
+&lt;i class="fas fa-envelope"&gt;&lt;/i&gt;  ETC5521.Clayton-x@monash.edu
+
+&lt;i class="fas fa-calendar-alt"&gt;&lt;/i&gt; Week 9 - Session 2
+
+&lt;br&gt;
+
+]
+
+
+
+&lt;style type="text/css"&gt;
+.gray80 {
+  color: #505050!important;
+  font-weight: 300;
+}
+.bg-gray80 {
+  background-color: #DCDCDC!important;
+}
+&lt;/style&gt;
+
+---
+# Outline
+
+- temporal missing values: time series models require that there is a value for each time step
+- longitudinal data: it is different from time series. Typically measurements are taken irregularly in time.
+
+---
+class: transition 
+
+## Working with missings
+
+---
+# Checking counting and filling missings in time
+
+.flex[
+.w-45[
+.s500.f5[
+
+```r
+set.seed(328)
+harvest &lt;- tsibble(
+  year = c(2010, 2011, 2013, 2011, 
+           2012, 2013),
+  fruit = rep(c("kiwi", "cherry"), 
+              each = 3),
+  kilo = sample(1:10, size = 6),
+  key = fruit, index = year
+)
+harvest
+```
+
+```
+## # A tsibble: 6 x 3 [1Y]
+## # Key:       fruit [2]
+##    year fruit   kilo
+##   &lt;dbl&gt; &lt;chr&gt;  &lt;int&gt;
+## 1  2011 cherry     2
+## 2  2012 cherry     7
+## 3  2013 cherry     1
+## 4  2010 kiwi       6
+## 5  2011 kiwi       5
+## 6  2013 kiwi       8
+```
+]]
+.w-10[
+.white[...]
+]
+.w-45[
+
+```r
+*has_gaps(harvest, .full = TRUE)
+```
+
+```
+## # A tibble: 2 × 2
+##   fruit  .gaps
+##   &lt;chr&gt;  &lt;lgl&gt;
+## 1 cherry TRUE 
+## 2 kiwi   TRUE
+```
+
+&lt;br&gt;
+Both levels of the key have missings.
+
+&lt;br&gt;&lt;br&gt;
+.monash-orange2[Can you see the gaps in time?]
+
+]]
+---
+# Checking counting and filling missings in time
+
+.flex[
+.w-45[
+.s500.f5[
+
+
+```r
+set.seed(328)
+harvest &lt;- tsibble(
+  year = c(2010, 2011, 2013, 2011, 
+           2012, 2013),
+  fruit = rep(c("kiwi", "cherry"), 
+              each = 3),
+  kilo = sample(1:10, size = 6),
+  key = fruit, index = year
+)
+harvest
+```
+
+```
+## # A tsibble: 6 x 3 [1Y]
+## # Key:       fruit [2]
+##    year fruit   kilo
+##   &lt;dbl&gt; &lt;chr&gt;  &lt;int&gt;
+## 1  2011 cherry     2
+## 2  2012 cherry     7
+## 3  2013 cherry     1
+## 4  2010 kiwi       6
+## 5  2011 kiwi       5
+## 6  2013 kiwi       8
+```
+]
+]
+.w-10[
+.white[...]
+]
+.w-45[
+
+```r
+*count_gaps(harvest,  .full=TRUE)
+```
+
+```
+## # A tibble: 2 × 4
+##   fruit  .from   .to    .n
+##   &lt;chr&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt;
+## 1 cherry  2010  2010     1
+## 2 kiwi    2012  2012     1
+```
+
+&lt;br&gt;
+
+One missing in each level, although it is a different year.
+
+&lt;br&gt; &lt;br&gt;
+
+Notice how `tsibble` handles this summary so neatly.
+
+]]
+
+
+---
+# Checking counting and filling missings in time
+
+.flex[
+.w-45[
+.s500.f5[
+
+
+```r
+set.seed(328)
+harvest &lt;- tsibble(
+  year = c(2010, 2011, 2013, 2011, 
+           2012, 2013),
+  fruit = rep(c("kiwi", "cherry"), 
+              each = 3),
+  kilo = sample(1:10, size = 6),
+  key = fruit, index = year
+)
+harvest
+```
+
+```
+## # A tsibble: 6 x 3 [1Y]
+## # Key:       fruit [2]
+##    year fruit   kilo
+##   &lt;dbl&gt; &lt;chr&gt;  &lt;int&gt;
+## 1  2011 cherry     2
+## 2  2012 cherry     7
+## 3  2013 cherry     1
+## 4  2010 kiwi       6
+## 5  2011 kiwi       5
+## 6  2013 kiwi       8
+```
+]
+]
+.w-10[
+.white[...]
+]
+.w-45[
+
+Make the implicit missing values .monash-orange2[explicit].
+
+&lt;br&gt;
+
+.s400.f5[
+
+```r
+*harvest &lt;- fill_gaps(harvest,
+*                    .full=TRUE)
+harvest 
+```
+
+```
+## # A tsibble: 8 x 3 [1Y]
+## # Key:       fruit [2]
+##    year fruit   kilo
+##   &lt;dbl&gt; &lt;chr&gt;  &lt;int&gt;
+*## 1  2010 cherry    NA
+## 2  2011 cherry     2
+## 3  2012 cherry     7
+## 4  2013 cherry     1
+## 5  2010 kiwi       6
+## 6  2011 kiwi       5
+*## 7  2012 kiwi      NA
+## 8  2013 kiwi       8
+```
+]
+
+
+]]
+
+---
+# Checking counting and filling missings in time
+
+.flex[
+.w-45[
+.s500[
+
+
+```r
+set.seed(328)
+harvest &lt;- tsibble(
+  year = c(2010, 2011, 2013, 2011, 
+           2012, 2013),
+  fruit = rep(c("kiwi", "cherry"), 
+              each = 3),
+  kilo = sample(1:10, size = 6),
+  key = fruit, index = year
+)
+harvest
+```
+]
+]
+.w-10[
+.white[...]
+]
+.w-45[
+
+.s500.f5[
+
+```r
+harvest_nomiss &lt;- harvest %&gt;% 
+* group_by(fruit) %&gt;%
+* mutate(kilo =
+*          na_interpolation(kilo)) %&gt;%
+  ungroup()
+harvest_nomiss
+```
+
+```
+## # A tsibble: 8 x 3 [1Y]
+## # Key:       fruit [2]
+##    year fruit   kilo
+##   &lt;dbl&gt; &lt;chr&gt;  &lt;dbl&gt;
+*## 1  2010 cherry   2  
+## 2  2011 cherry   2  
+## 3  2012 cherry   7  
+## 4  2013 cherry   1  
+## 5  2010 kiwi     6  
+## 6  2011 kiwi     5  
+*## 7  2012 kiwi     6.5
+## 8  2013 kiwi     8
+```
+]
+
+]]
+
+---
+# .orange[Case study] .bg-orange.circle[3] Melbourne pedestrian traffic .font_small[Part 1/5]
+
+.flex[
+.w-45[
+.s500.f5[
+
+
+```r
+data(pedestrian) # in tsibble
+has_gaps(pedestrian, 
+         .full = TRUE)
+```
+
+```
+## # A tibble: 4 × 2
+##   Sensor                        .gaps
+##   &lt;chr&gt;                         &lt;lgl&gt;
+## 1 Birrarung Marr                TRUE 
+## 2 Bourke Street Mall (North)    TRUE 
+## 3 QV Market-Elizabeth St (West) TRUE 
+## 4 Southern Cross Station        TRUE
+```
+
+```r
+ped_gaps &lt;- pedestrian %&gt;% 
+  count_gaps(.full = TRUE)
+```
+
+
+```r
+ggplot(ped_gaps,
+       aes(x = Sensor, 
+           colour = Sensor)) +
+  geom_linerange(
+    aes(ymin = .from, 
+        ymax = .to), size=2) +
+  geom_point(aes(y = .from), size=4) +
+  geom_point(aes(y = .to), size=4) +
+  xlab("") +
+  coord_flip() +
+  scale_y_datetime("", 
+    date_breaks = "4 months", 
+    date_labels = "%y-%m",
+    date_minor_breaks = "1 month") +
+  scale_color_brewer("", 
+          palette="Dark2") +
+  theme(legend.position = "none")
+```
+
+]
+]
+.w-5[
+.white[...]
+]
+.w-50[
+
+&lt;img src="images/lecture-09B/unnamed-chunk-6-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+Every sensor has a missing value each April. .monash-orange2[What happens in April each year]?
+
+
+]]
+
+
+
+---
+# .orange[Case study] .bg-orange.circle[3] Melbourne pedestrian traffic .font_small[Part 2/5]
+
+.panelset[
+.panel[.panel-name[🖼️]
+
+Missings at the end of the year at QV market.
+
+&lt;img src="images/lecture-09B/ped_missing3-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+
+]
+
+.panel[.panel-name[R]
+
+
+```r
+ped_full %&gt;% 
+  filter(month(Date_Time) == 12, year(Date_Time) == 2015,
+         mday(Date_Time) &gt; 24) %&gt;%
+  ggplot(aes(x=Date_Time, y=Count, 
+             colour=Sensor, group=Sensor)) + 
+    geom_line() +
+    geom_point() +
+    xlab("") +
+    facet_wrap(~Sensor, ncol=2, scales="free_y") +
+    scale_color_brewer("", palette="Dark2") +
+    theme(legend.position = "none")
+```
+
+]
+]
+---
+# .orange[Case study] .bg-orange.circle[3] Melbourne pedestrian traffic .font_small[Part 3/5]
+
+.panelset[
+.panel[.panel-name[🖼️]
+
+&lt;img src="images/lecture-09B/ped_missing4-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+Imputed with seasonal component. 
+]
+
+.panel[.panel-name[R]
+
+.s500.f5[
+
+```r
+ped_nomiss &lt;- ped_full %&gt;%   
+  group_by(Sensor) %&gt;%
+  mutate(Count_int = na_interpolation(Count),
+         Count_mean = na_mean(Count),
+         Count_rand = na_random(Count),
+         Count_ma = na_ma(Count, k=24),
+         Count_loc = na_locf(Count),
+         Count_seas = na_seadec(Count, find_frequency = TRUE))
+ped_nomiss %&gt;% 
+  filter(month(Date_Time) == 12, year(Date_Time) == 2015,
+         mday(Date_Time) &gt; 24) %&gt;%
+  mutate(is_miss = ifelse(is.na(Count), "missing", "not")) %&gt;%
+  ggplot(aes(x=Date_Time, y=Count_seas, 
+             group=Sensor, colour = is_miss)) + 
+    geom_line() +
+    geom_point() +
+    facet_wrap(~Sensor, ncol=2, scales="free_y") +
+    scale_color_brewer("", palette="Paired", direction = -1) +
+    ylab("Count") + xlab("") + 
+    theme(legend.position = c(0.4, 1.0))
+```
+]
+]
+
+]
+---
+# .orange[Case study] .bg-orange.circle[3] Melbourne pedestrian traffic .font_small[Part 4/5]
+
+.panelset[
+.panel[.panel-name[🖼️]
+
+&lt;img src="images/lecture-09B/ped_missing5-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+Missings in November at Birrarung Marr.
+]
+
+.panel[.panel-name[R]
+
+
+
+```r
+ped_full %&gt;% 
+  filter(month(Date_Time) == 11, year(Date_Time) == 2015,
+         mday(Date_Time) &lt; 8) %&gt;%
+  ggplot(aes(x=Date_Time, y=Count, 
+             colour=Sensor, group=Sensor)) + 
+    geom_line() +
+    geom_point() +
+    xlab("") +
+    facet_wrap(~Sensor, ncol=2, scales="free_y") +
+    scale_color_brewer("", palette="Dark2") +
+    theme(legend.position = "none")
+```
+
+]
+]
+---
+# .orange[Case study] .bg-orange.circle[3] Melbourne pedestrian traffic .font_small[Part 5/5]
+
+.panelset[
+.panel[.panel-name[🖼️]
+
+&lt;img src="images/lecture-09B/ped_missing6-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+Imputed with seasonal component. Irregular patterns make imputation difficult. 
+
+]
+
+.panel[.panel-name[R]
+
+
+```r
+ped_nomiss %&gt;% 
+  filter(month(Date_Time) == 11, year(Date_Time) == 2015,
+         mday(Date_Time) &lt; 8) %&gt;%
+  mutate(is_miss = ifelse(is.na(Count), "missing", "not")) %&gt;%
+  ggplot(aes(x=Date_Time, y=Count_seas, 
+             group=Sensor, colour = is_miss)) + 
+    geom_line() +
+    geom_point() +
+    facet_wrap(~Sensor, ncol=2, scales="free_y") +
+    scale_color_brewer("", palette="Paired", direction = -1) +
+    ylab("Count") + xlab("") +
+    theme(legend.position = c(0.4, 1.0))
+```
+]
+]
+
+---
+class: middle
+
+&lt;p style="padding-left: 20%"&gt;
+
+.info-box.w-60[Imputing temporal data is necessary for modeling and forecasting, which typically require complete data. Incorporate seasonal components, if necessary, and temporal dependence. That means you need to .monash-orange2[understand enough about the data to do imputation well].]
+
+&lt;/p&gt;
+
+---
+class: transition 
+
+## Longitudinal data
+
+Information from the same individuals, recorded at multiple points in time.
+
+Usually irregular, and not easy to regularise. Lots more short series.
+
+Longitudinal data has the .monash-yellow2[same properties] as time series, but generally .monash-yellow2[different objectives] for the analysis.
+
+
+---
+
+ In the `brolgar` package methods build on the `tsibble` data object.  
+
+
+```
+*## # A tsibble: 6,402 x 9 [!]
+*## # Key:       id [888]
+##       id ln_wages    xp   ged xp_since_ged black hispanic high_grade unemploy_rate
+##    &lt;int&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt;        &lt;dbl&gt; &lt;int&gt;    &lt;int&gt;      &lt;int&gt;         &lt;dbl&gt;
+##  1    31     1.49 0.015     1        0.015     0        1          8          3.21
+##  2    31     1.43 0.715     1        0.715     0        1          8          3.21
+##  3    31     1.47 1.73      1        1.73      0        1          8          3.21
+##  4    31     1.75 2.77      1        2.77      0        1          8          3.3 
+##  5    31     1.93 3.93      1        3.93      0        1          8          2.89
+##  6    31     1.71 4.95      1        4.95      0        1          8          2.49
+##  7    31     2.09 5.96      1        5.96      0        1          8          2.6 
+##  8    31     2.13 6.98      1        6.98      0        1          8          4.8 
+##  9    36     1.98 0.315     1        0.315     0        0          9          4.89
+## 10    36     1.80 0.983     1        0.983     0        0          9          7.4 
+## # ℹ 6,392 more rows
+```
+
+---
+# .orange[Case study] .bg-orange.circle[4] Wages .font_small[Part 1/15]
+
+.pull-left[
+
+```r
+wages %&gt;%
+  ggplot(aes(x = xp,
+             y = ln_wages,
+             group = id)) + 
+  geom_line(alpha=0.3) 
+```
+
+Log(wages) of 888 individuals, measured at various times in their employment (workforce experience). 
+
+]
+
+.pull-right[
+&lt;img src="images/lecture-09B/unnamed-chunk-11-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+class: middle center
+
+# from a spaghetti mess
+
+&lt;img src="images/week9B/spaghetti_mess.gif" width="640" height="480"&gt;
+
+.footnote[Source: giphy]
+---
+class: middle center
+count: false
+
+# to controlled spaghetti handling
+
+&lt;img src="images/week9B/spaghetti_clean.gif" width="640" height="480"&gt;
+
+.footnote[Source: giphy]
+
+---
+class: middle center
+count: false
+
+# to perfection
+
+&lt;img src="images/week9B/spaghetti_perfect.gif" width="640" height="480"&gt;
+
+.footnote[Source: giphy]
+
+---
+# .orange[Case study] .bg-orange.circle[4] Wages .font_small[Part 2/15]
+
+.pull-left[
+
+Using features, compute the number of measurements for each subject
+
+
+```r
+wages %&gt;%
+* features(ln_wages, n_obs) %&gt;%
+  ggplot(aes(x = n_obs)) + 
+  geom_bar() +
+  xlab("Number of observations") 
+```
+
+Different number of observations per person! It ranges from 1-13.
+
+.info-box[Too few observations means there is a lack of support to do temporal analysis.]
+]
+
+.pull-right[
+&lt;img src="images/lecture-09B/unnamed-chunk-12-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+---
+# .orange[Case study] .bg-orange.circle[4] Wages .font_small[Part 3/15]
+
+
+.pull-left[
+You should filter on this, and remove subjects with few observations. &lt;br&gt;&lt;br&gt;
+
+
+```r
+*wages &lt;- wages %&gt;% add_n_obs()
+wages %&gt;% 
+* filter(n_obs &gt; 3) %&gt;%
+  select(id, ln_wages, xp, n_obs)
+```
+]
+
+.pull-right[
+
+```
+## # A tsibble: 6,145 x 4 [!]
+*## # Key:       id [764]
+##       id ln_wages    xp n_obs
+##    &lt;int&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt;
+##  1    31     1.49 0.015     8
+##  2    31     1.43 0.715     8
+##  3    31     1.47 1.73      8
+##  4    31     1.75 2.77      8
+##  5    31     1.93 3.93      8
+##  6    31     1.71 4.95      8
+##  7    31     2.09 5.96      8
+##  8    31     2.13 6.98      8
+##  9    36     1.98 0.315    10
+## 10    36     1.80 0.983    10
+## # ℹ 6,135 more rows
+```
+]
+
+
+---
+# .orange[Case study] .bg-orange.circle[4] Wages .font_small[Part 4/15]
+
+.pull-left[
+Using features to extract minimum time
+&lt;br&gt;&lt;br&gt;
+
+
+```r
+wages %&gt;%
+* features(xp, list(min = min)) %&gt;%
+  ggplot(aes(x = min)) + 
+  geom_histogram(binwidth=0.5) +
+  xlim(c(0, 13)) +
+  xlab("First time in study") 
+```
+
+&lt;br&gt;&lt;br&gt;
+
+Subjects start in the study at different employment experience times, ranging from 0 to more than 10 years.
+]
+
+.pull-right[
+&lt;img src="images/lecture-09B/unnamed-chunk-14-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+# .orange[Case study] .bg-orange.circle[4] Wages .font_small[Part 5/15]
+
+.pull-left[
+Using features to extract range of time index
+&lt;br&gt;&lt;br&gt;
+
+
+```r
+wages_xp_range &lt;- wages %&gt;% 
+* features(xp, feat_ranges)
+
+ggplot(wages_xp_range,
+       aes(x = range_diff)) + 
+  geom_histogram() + 
+  xlab("Range of experience")
+```
+
+There's a range of workforce experience.
+]
+
+.pull-right[
+
+&lt;img src="images/lecture-09B/unnamed-chunk-15-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+# .orange[Case study] .bg-orange.circle[4] Wages .font_small[Part 6/15]
+
+.pull-left[
+.monash-orange2[Small spoonfuls of spaghetti]
+
+Sample some individuals
+&lt;br&gt;&lt;br&gt;
+
+
+
+
+```r
+wages %&gt;%
+* sample_n_keys(size = 10) %&gt;%
+  ggplot(aes(x = xp,
+             y = ln_wages,
+             group = id)) + 
+  geom_line() +
+  xlim(c(0,13)) + ylim(c(0, 4.5)) +
+  xlab("Years of experience") + 
+  ylab("Log wages") 
+```
+
+Wages conversion 0.5 = $1.65; 4.5 = $90
+]
+
+.pull-right[
+&lt;img src="images/lecture-09B/unnamed-chunk-17-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+count: false
+# .orange[Case study] .bg-orange.circle[4] Wages .font_small[Part 6/15]
+
+
+.pull-left[
+.monash-orange2[Small spoonfuls of spaghetti]
+
+Sample some individuals
+&lt;br&gt;&lt;br&gt;
+
+
+```r
+wages %&gt;%
+* sample_n_keys(size = 10) %&gt;%
+  ggplot(aes(x = xp,
+             y = ln_wages,
+             group = id)) + 
+  geom_line() +
+  xlim(c(0,13)) + ylim(c(0, 4.5)) +
+  xlab("Years of experience") + 
+  ylab("Log wages") 
+```
+
+Wages conversion 0.5 = $1.65; 4.5 = $90
+]
+
+.pull-right[
+&lt;img src="images/lecture-09B/unnamed-chunk-19-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+count: false
+# .orange[Case study] .bg-orange.circle[4] Wages .font_small[Part 6/15]
+
+
+.pull-left[
+.monash-orange2[Small spoonfuls of spaghetti]
+
+Sample some individuals
+&lt;br&gt;&lt;br&gt;
+
+
+```r
+wages %&gt;%
+* sample_n_keys(size = 10) %&gt;%
+  ggplot(aes(x = xp,
+             y = ln_wages,
+             group = id)) + 
+  geom_line() +
+  xlim(c(0,13)) + ylim(c(0, 4.5)) +
+  xlab("Years of experience") + 
+  ylab("Log wages") 
+```
+
+Wages conversion 0.5 = $1.65; 4.5 = $90
+]
+
+.pull-right[
+&lt;img src="images/lecture-09B/unnamed-chunk-21-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+# .orange[Case study] .bg-orange.circle[4] Wages .font_small[Part 7/15]
+
+.pull-left[
+.monash-orange2[Take a spoonful of different lengths]
+
+Sample experienced individuals
+&lt;br&gt;&lt;br&gt;
+
+
+```r
+wages %&gt;%
+  add_n_obs() %&gt;%
+* filter(n_obs &gt; 7) %&gt;%
+  sample_n_keys(size = 10) %&gt;%
+  ggplot(aes(x = xp,
+             y = ln_wages,
+             group = id)) + 
+  geom_line()  +
+  xlim(c(0,13)) + ylim(c(0, 4.5)) +
+  xlab("Years of experience") + 
+  ylab("Log wages")
+```
+
+Wages conversion 0.5 = $1.65; 4.5 = $90
+]
+
+.pull-right[
+&lt;img src="images/lecture-09B/unnamed-chunk-22-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+count: false
+# .orange[Case study] .bg-orange.circle[4] Wages .font_small[Part 7/15]
+
+
+.pull-left[
+.monash-orange2[Take a spoonful of different lengths]
+
+Sample experienced individuals
+&lt;br&gt;&lt;br&gt;
+
+
+```r
+wages %&gt;%
+  add_n_obs() %&gt;%
+* filter(n_obs &gt; 7) %&gt;%
+  sample_n_keys(size = 10) %&gt;%
+  ggplot(aes(x = xp,
+             y = ln_wages,
+             group = id)) + 
+  geom_line()  +
+  xlim(c(0,13)) + ylim(c(0, 4.5)) +
+  xlab("Years of experience") + 
+  ylab("Log wages")
+```
+
+Wages conversion 0.5 = $1.65; 4.5 = $90
+]
+
+.pull-right[
+&lt;img src="images/lecture-09B/unnamed-chunk-24-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+count: false
+# .orange[Case study] .bg-orange.circle[4] Wages .font_small[Part 7/15]
+
+
+.pull-left[
+.monash-orange2[Take a spoonful of different lengths]
+
+Sample experienced individuals
+&lt;br&gt;&lt;br&gt;
+
+
+```r
+wages %&gt;%
+  add_n_obs() %&gt;%
+* filter(n_obs &gt; 7) %&gt;%
+  sample_n_keys(size = 10) %&gt;%
+  ggplot(aes(x = xp,
+             y = ln_wages,
+             group = id)) + 
+  geom_line()  +
+  xlim(c(0,13)) + ylim(c(0, 4.5)) +
+  xlab("Years of experience") + 
+  ylab("Log wages")
+```
+
+Wages conversion 0.5 = $1.65; 4.5 = $90
+]
+
+.pull-right[
+&lt;img src="images/lecture-09B/unnamed-chunk-26-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+# .orange[Case study] .bg-orange.circle[4] Wages .font_small[Part 8/15]
+
+.panelset[
+.panel[.panel-name[🖼️]
+
+&lt;img src="images/lecture-09B/wages_facet-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+
+]
+.panel[.panel-name[info]
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;
+
+Two sampling tools
+
+- `facet_strata`: show the whole pot, neatly separated into equally portioned
+- `facet_sample`: show most of the pot in neatly separated portions
+
+]
+.panel[.panel-name[R]
+
+
+```r
+wages %&gt;% 
+  filter(n_obs &gt; 1) %&gt;%
+  ggplot(aes(x = xp,
+           y = ln_wages,
+           group = id)) +
+  geom_line() +
+* facet_sample(n_per_facet = 3,
+*              n_facets = 20)  +
+  xlab("Years of experience") + 
+  ylab("Log wages") 
+```
+
+]
+]
+
+---
+class: transition
+
+## Special features 
+
+---
+## Special features 
+
+Remember scagnostics?
+
+Compute longnostics for each subject
+
+- Slope, intercept from simple linear model
+- Variance, standard deviation
+- Jumps, differences
+
+For large collections of time series, take a look at the `feasts` package, which has a long list of time series features (tignostics) to calculate.
+
+---
+# .orange[Case study] .bg-orange.circle[4] Wages .font_small[Part 9/15]
+
+.pull-left[
+
+.monash-orange2[increasing]
+
+
+```r
+wages_slope &lt;- wages %&gt;%   
+  add_n_obs() %&gt;%
+  filter(n_obs &gt; 4) %&gt;%
+* add_key_slope(ln_wages ~ xp) %&gt;%
+  as_tsibble(key = id, index = xp) 
+
+wages_slope %&gt;% 
+* filter(.slope_xp &gt; 0.4) %&gt;%
+  ggplot(aes(x = xp, 
+             y = ln_wages, 
+             group = id)) + 
+  geom_line() +
+  ylim(c(0, 4.5)) +
+  xlab("Years of experience") + 
+  ylab("Log wages") 
+```
+
+]
+
+.pull-right[
+&lt;img src="images/lecture-09B/unnamed-chunk-28-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+# .orange[Case study] .bg-orange.circle[4] Wages .font_small[Part 10/15]
+
+.pull-left[
+
+.monash-orange2[decreasing]
+
+
+```r
+wages_slope %&gt;% 
+* filter(.slope_xp &lt; (-0.7)) %&gt;%
+  ggplot(aes(x = xp, 
+             y = ln_wages, 
+             group = id)) + 
+  geom_line() +
+  ylim(c(0, 4.5)) +
+  xlab("Years of experience") + 
+  ylab("Log wages")
+```
+
+]
+
+.pull-right[
+&lt;img src="images/lecture-09B/unnamed-chunk-29-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+class: transition
+
+## Longitudinal data needs a special five number summary 
+
+---
+# Summarising individuals
+
+A different style of five number summary
+
+Who is average?
+Who is different?
+&lt;br&gt;&lt;br&gt;
+
+Find those individuals who are .monash-orange2[representative] of the min, median, maximum, etc of a particular feature, e.g. trend, using `keys_near()`. This reports the individual who is closest to a particular statistic.
+&lt;br&gt;&lt;br&gt;
+
+`wages_threenum()` returns the three individuals: min, max and closest to the median value. 
+
+`wages_fivenum()` returns the five individuals: min, max and closest to the median, Q1 and Q3 values. 
+
+---
+# .orange[Case study] .bg-orange.circle[4] Wages .font_small[Part 11/15]
+
+.pull-left[
+
+
+```r
+wages_threenum &lt;- wages %&gt;%   
+  add_n_obs() %&gt;%
+  filter(n_obs &gt; 4) %&gt;%
+  key_slope(ln_wages ~ xp) %&gt;%
+* keys_near(key = id,
+*           var = .slope_xp,
+*           funs = l_three_num) %&gt;%
+  left_join(wages, by = "id") %&gt;%
+  as_tsibble(key = id, index = xp) 
+```
+
+.info-box[Minimum/maximum are short series with substantial decline/incline. Median is very flat, no change in real wages.]
+]
+]
+
+.pull-right[
+&lt;img src="images/lecture-09B/three_number_plot-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+# .orange[Case study] .bg-orange.circle[4] Wages .font_small[Part 12/15]
+
+.pull-left[
+
+.f5[
+
+```r
+wages_fivenum &lt;- wages %&gt;%   
+  add_n_obs() %&gt;%
+  filter(n_obs &gt; 6) %&gt;%
+  key_slope(ln_wages ~ xp) %&gt;%
+  keys_near(key = id,
+            var = .slope_xp,
+*           funs = l_five_num) %&gt;%
+  left_join(wages, by = "id") %&gt;%
+  as_tsibble(key = id, index = xp) 
+```
+]
+]
+.pull-right[
+.info-box[Q1 and Q3 are also flat which means that, at least, 50% of the individuals experience no real change in wage.]
+]
+
+&lt;br&gt;&lt;br&gt;
+
+&lt;img src="images/lecture-09B/five_number_plot-1.png" width="90%" style="display: block; margin: auto;" /&gt;
+
+
+---
+# .orange[Case study] .bg-orange.circle[4] Wages .font_small[Part 13/15]
+
+.pull-left[
+
+.monash-orange2[Sculpting spaghetti]
+
+Mixed effects model, education as fixed effect, subject random effect using slope.
+&lt;br&gt;&lt;br&gt;
+
+.f5[
+
+```r
+wages_fit_int &lt;- 
+* lmer(ln_wages ~ xp + high_grade +
+*        (xp |id), data = wages)
+wages_aug &lt;- wages %&gt;%
+  add_predictions(wages_fit_int, 
+                  var = "pred_int") %&gt;%
+  add_residuals(wages_fit_int, 
+                var = "res_int")
+```
+]
+]
+
+.pull-right[
+&lt;img src="images/lecture-09B/model_plot-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+count: false
+
+# .orange[Case study] .bg-orange.circle[4] Wages .font_small[Part 13/15]
+
+.pull-left[
+
+.monash-orange2[Sculpting spaghetti]
+
+Mixed effects model, education as fixed effect, subject random effect using slope.
+&lt;br&gt;&lt;br&gt;
+
+.f5[
+
+```r
+wages_fit_int &lt;- 
+* lmer(ln_wages ~ xp + high_grade +
+*        (xp |id), data = wages)
+wages_aug &lt;- wages %&gt;%
+  add_predictions(wages_fit_int, 
+                  var = "pred_int") %&gt;%
+  add_residuals(wages_fit_int, 
+                var = "res_int")
+```
+]
+]
+
+.pull-right[
+&lt;img src="images/lecture-09B/res_plot-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+# .orange[Case study] .bg-orange.circle[4] Wages .font_small[Part 14/15]
+
+.panelset[
+.panel[.panel-name[🖼️]
+
+Model diagnostics: Sample individuals and plot model on the data. .monash-orange2[Notice individual 5630.]
+
+&lt;img src="images/lecture-09B/model-data-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+]
+.panel[.panel-name[R]
+
+
+```r
+set.seed(1)
+wages_aug %&gt;% add_n_obs() %&gt;% filter(n_obs &gt; 4) %&gt;%
+  sample_n_keys(size = 12) %&gt;%
+  ggplot() + 
+* geom_line(aes(x = xp, y = pred_int, group = id,
+             colour = factor(id))) + 
+* geom_point(aes(x = xp, y = ln_wages,
+                 colour = factor(id))) + 
+  scale_colour_ochre(palette = "emu_woman_paired") +
+  facet_wrap(~id, ncol=4)  +
+  xlab("Years of experience") + ylab("Log wages") +
+  theme(legend.position = "none")
+```
+]
+]
+
+---
+# .orange[Case study] .bg-orange.circle[4] Wages .font_small[Part 15/15]
+&lt;br&gt;&lt;br&gt;
+
+## What we learn about wages that we would not have learned without doing EDA
+
+- The individual wage experience is extremely varied
+- Some individuals see a decline in their wages the longer they are in the workforce
+- Most individuals generally see some (small) increase, on average
+
+&lt;br&gt;&lt;br&gt;
+
+.info-box[Exploratory analysis of individual temporal patterns can be very really interesting!]
+
+---
+class: middle
+
+
+.info-box[The main difference between .monash-green2[time series] data and .monash-purple2[longitudinal] data, is the former is typically regular, complete, may be only one or a few, and the latter is typically of different lengths, different time measurements and a lot.]
+
+
+&lt;img src="images/lecture-09B/ts-visual-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Resources and Acknowledgement
+
+- Tidy tools for time series [tidyverts](https://tidyverts.org)
+- Imputing missings in time using [imputeTS](https://cran.r-project.org/web/packages/imputeTS/vignettes/imputeTS-Time-Series-Missing-Value-Imputation-in-R.pdf)
+- [Temporal missings](https://tsibble.tidyverts.org/articles/implicit-na.html) in `tsibble`
+- [Longitudinal data exploration](http://brolgar.njtierney.com/index.html) with `brolgar`
+- Data coding using [`tidyverse` suite of R packages](https://www.tidyverse.org) 
+- Slides constructed with [`xaringan`](https://github.com/yihui/xaringan), [remark.js](https://remarkjs.com), [`knitr`](http://yihui.name/knitr), and [R Markdown](https://rmarkdown.rstudio.com).
+
+---
+
+
+
+
+background-size: cover
+class: title-slide
+background-image: url("images/bg-12.png")
+
+&lt;a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"&gt;&lt;img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /&gt;&lt;/a&gt;&lt;br /&gt;This work is licensed under a &lt;a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"&gt;Creative Commons Attribution-ShareAlike 4.0 International License&lt;/a&gt;.
+
+
+.bottom_abs.width100[
+
+Lecturer: *Di Cook*
+
+
+
+&lt;i class="fas fa-envelope"&gt;&lt;/i&gt;  ETC5521.Clayton-x@monash.edu
+
+&lt;i class="fas fa-calendar-alt"&gt;&lt;/i&gt; Week 9 - Session 2
+
+&lt;br&gt;
+
+]
+
+
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="lib/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "magula",
+"highlightLanguage": "r",
+"highlightLines": true,
+"highlightSpans": false,
+"countIncrementalSlides": false,
+"slideNumberFormat": "%current%/%total%",
+"navigation": {
+"scroll": false,
+"touch": true,
+"click": false
+},
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'lib/mathjax-local/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

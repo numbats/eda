@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>ETC5521: Exploratory Data Analysis</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Di Cook" />
+    <script src="lib/header-attrs-2.22/header-attrs.js"></script>
+    <link href="lib/remark-css-0.0.1/ninjutsu.css" rel="stylesheet" />
+    <link href="lib/font-awesome-animation-1.0/font-awesome-animation-emi.css" rel="stylesheet" />
+    <script src="lib/fontawesome-5.0.13/js/fontawesome-all.min.js"></script>
+    <link rel="stylesheet" href="assets/font-awesome-all.css" type="text/css" />
+    <link rel="stylesheet" href="assets/tachyons-addon.css" type="text/css" />
+    <link rel="stylesheet" href="assets/animate.css" type="text/css" />
+    <link rel="stylesheet" href="assets/fira-code.css" type="text/css" />
+    <link rel="stylesheet" href="assets/boxes.css" type="text/css" />
+    <link rel="stylesheet" href="assets/table.css" type="text/css" />
+    <link rel="stylesheet" href="assets/styles.css" type="text/css" />
+    <link rel="stylesheet" href="assets/monash-brand.css" type="text/css" />
+    <link rel="stylesheet" href="assets/monash-fonts.css" type="text/css" />
+    <link rel="stylesheet" href="assets/slide-types.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+
+
+class: middle center hide-slide-number monash-bg-gray80
+
+
+
+
+
+.info-box.w-50.bg-white[
+These slides are viewed best by Chrome or Firefox and occasionally need to be refreshed if elements did not load properly. See &lt;a href=lecture-00A.pdf&gt;here for the PDF &lt;i class="fas fa-file-pdf"&gt;&lt;/i&gt;&lt;/a&gt;. 
+]
+
+&lt;br&gt;
+
+.white[Press the **right arrow** to progress to the next slide!]
+
+
+
+---
+
+class: title-slide
+count: false
+background-image: url("images/bg-12.png")
+
+# .monash-blue[ETC5521: Exploratory Data Analysis]
+
+&lt;h1 class="monash-blue" style="font-size: 30pt!important;"&gt;&lt;/h1&gt;
+
+&lt;br&gt;
+
+&lt;h2 style="font-weight:900!important;"&gt;Getting started&lt;/h2&gt;
+
+.bottom_abs.width100[
+
+Lecturer: *Di Cook*
+
+
+
+&lt;i class="fas fa-envelope"&gt;&lt;/i&gt;  ETC5521.Clayton-x@monash.edu
+
+&lt;i class="fas fa-calendar-alt"&gt;&lt;/i&gt; Week 1 - Session 0
+
+&lt;br&gt;
+
+]
+
+
+
+---
+
+class: fullscreen
+
+.flex.h-100[
+.pa4.w-40[
+.circle-image-200.center[
+&lt;img src="images/dicook-2022.png" width = "200px"/&gt;
+]
+
+&lt;br&gt;
+  
+
+# Di Cook 
+*Professor of Statistics*  
+Monash University
+
+&lt;br&gt;
+
+&lt;i class="fas fa-globe"&gt;&lt;/i&gt; https://dicook.org/ 
+
+&lt;i class="fas fa-envelope"&gt;&lt;/i&gt; ETC5521.Clayton-x@monash.edu
+
+&lt;i class="fab fa-twitter"&gt;&lt;/i&gt; @visnut@aus.social
+
+]
+
+.pa5.w-60[
+
+# About your instructor
+
+* She has a PhD from Rutgers University, NJ, and a Bachelor of Science from University of New England
+* She is a Fellow of the American Statistical Association, elected member of the the R Foundation and International Statistical Institute, Editor of the Journal of Computational and Graphical Statistics, and the R Journal.
+* My research is in data visualisation, statistical graphics and computing, with application to sports, ecology and bioinformatics. She likes to develop new methodology and software. 
+* Her students were primarily responsible for producing the tidyverse suite, R Markdown and knitr, plotly, and many other R packages we regularly use. 
+
+]
+
+
+]
+
+
+---
+
+class: fullscreen
+
+.flex.h-100[
+.pa4.w-50[
+
+&lt;br&gt;
+
+# Jayani Lakshika
+
+*PhD student*  
+Monash University
+
+&lt;br&gt;
+
+&lt;i class="fas fa-globe"&gt;&lt;/i&gt; https://github.com/JayaniLakshika
+
+&lt;br&gt;
+
+- She is from Sri Lanka.
+- Her research is on models for high-dimensional data. 
+- Loves programming, especially in R.
+- Talk to me about sports (cricket, tennis, soccer) - I will stay up all night watching!
+
+]
+
+.pa5.w-50[
+
+&lt;br&gt;
+
+# Thomas Nguyen
+
+*MBAt 2022 graduate*  
+Monash University
+
+&lt;br&gt;
+
+&lt;i class="fas fa-globe"&gt;&lt;/i&gt; https://github.com/Thanh-8213
+
+&lt;br&gt;
+
+- He is from Vietnam.
+- Tutored ETC5512 in S1 2023. Also tutoring ETC1010 and ETC2420 in S2 2023.
+- Talk to me about magic, cooking, board games and badminton!
+
+&lt;br&gt;
+
+]]
+
+
+
+---
+class: center
+
+# Got a question or a comment!
+
+&lt;br&gt;
+
+✋🏽You can ask, unmute yourself in the chat or raise your hand in the lecture room.
+
+&lt;br&gt;
+🧑🏽‍💻 If watching later, please use the moodle (ED) forum.
+
+
+---
+class: middle center
+
+## 👋 .monash-blue[Welcome to ETC5521 Exploratory data analysis!]
+
+&lt;br&gt;
+
+.monash-blue[Before modelling and predicting, data should first be explored to uncover the patterns and structures that exist. Exploratory data analysis involves both numerical and visual techniques designed to reveal interesting information that may be hidden in the data. However, an analyst must be cautious not to over-interpret apparent patterns, and to properly assess the results of a data exploration.]
+
+---
+
+# 📅 Unit Structure 
+
+&lt;br&gt;
+
+-  2 hour lectures &lt;i class="fas fa-chalkboard-teacher"&gt;&lt;/i&gt;  <span class=" faa-bounce animated-hover " style=" display: -moz-inline-stack; display: inline-block; transform: rotate(0deg);">Thu 08.00AM-10.00AM</span>
+
+&lt;br&gt;
+
+- 1.5 hour face-to-face tutorial  &lt;i class="fas fa-wrench"&gt;&lt;/i&gt; <span class=" faa-bounce animated-hover " style=" display: -moz-inline-stack; display: inline-block; transform: rotate(0deg);">Thu 15:00-16.30PM</span> CL_Anc-19.LTB_132
+
+&lt;br&gt;
+
+- 1.5 hour zoom tutorial  &lt;i class="fas fa-wrench"&gt;&lt;/i&gt; <span class=" faa-bounce animated-hover " style=" display: -moz-inline-stack; display: inline-block; transform: rotate(0deg);">Thu 16.30-18:00PM</span> CL_Anc-19.LTB_132
+
+
+&lt;br&gt;&lt;br&gt;
+
+&lt;center&gt; *Attendances are recorded.* &lt;/center&gt;
+---
+
+# 🎯 ETC5521 Learning Objectives
+
+&lt;br&gt;
+.info-box.wider-list.width70[
+1. learn to use modern data exploration tools with real data to uncover interesting structure and
+unusual observations 
+2. understand how to map out appropriate analyses, and to define what we would expect to see in the data 
+3. be able to compute null samples in order to test apparent patterns, and to interpret the
+results of visual inference 
+]
+
+---
+# 📚 Resources
+
+&lt;br&gt;
+
+&lt;i class="fa fa-home"&gt;&lt;/i&gt; **Course homepage**: this is where you find the course materials &lt;br&gt;(lecture slides, tutorials and tutorial solutions)
+### https://eda.numbat.space/
+
+&lt;i class="fa fa-archive"&gt;&lt;/i&gt; **Moodle**: this is where you find discussion forum, zoom links, assignments and marks
+### https://lms.monash.edu/course/view.php?id=141370
+
+---
+# 💯 Assessment .font_small[Part 1/2]
+
+# Active engagement is expected but not assessed
+
+* Lecture and tutorial participation will contribute to this.
+* If you have some clashes for lecture or tutorial, there are other opportunities to show your engagement, including:
+  * posting in the Moodle/ED discussion forum, 
+  * github commits (more on this later in the course), 
+  * peer reviewing (more on this later in the course), and 
+  * online submissions (see Tutorial Q3 for example). 
+* There should be **at least 3 measurable and meaningful engagement activities each week**. Think about posting a question or a comment in the discussion forum each week!
+
+---
+# 💯 Assessment .font_small[Part 2/2]
+
+# Weekly quizzes **10%** 
+There will be a weekly quiz provided through Moodle. These are a great chance to check your knowledge, and help you prepare for the tutorial and to keep up to date with the weekly course material. Your best 10 scores will be used for your final quiz total. 
+&lt;br&gt;
+
+# Assignment 1, 2 (**25%** each): through GitHub classroom
+Due dates are in Moodle and on https://eda.numbat.space/index.html. These are individual. 
+&lt;br&gt;
+
+# Assignment 3, parts 1 and 2 (**20%** each): through GitHub classroom
+Due dates are in Moodle and on https://eda.numbat.space/index.html. We'll be working on a buddy system. For each part you will be randomly grouped with another student, and you will work together to provide a solution. Different partner each time. The work needs to be conducted using Github, so that your efforts on the team work will be assessed from your commits. 
+
+
+---
+
+# 🔶 Expectations .font_small[Part 1/2]
+
+* Lectures are recorded but you are expected to have either attended the lecture, or watched the recordings fully, prior to the tutorial for the week.
+* Tutorials attendance is expected. You should send an email ETC5521.Clayton-x@monash.edu if you expect to be absent in any week. 
+* Questions related to the course should be raised at Moodle/ED discussion forum.
+* For personal or private administrative issues, the email contact is: ETC5521.Clayton-x@monash.edu
+* If you miss a lecture/tutorial, it is your responsibility to catch up with missed material, learn about due dates for material to be turned in, and getting assigned to a group for team work, as necessary.
+* All times are given in AEST (Melbourne time).
+
+---
+
+# 🔶 Expectations .font_small[Part 2/2]
+
+* **ETC5510 is prerequisite**. Some of you may have exemption (due to evidence of equivalent knowledge to ETC5510).
+* It is expected that you have already basic skills at data wrangling, visualisation, simple modeling, and comfortable with reproducible reporting using Rmarkdown.
+* The priority of the ETC5521 teaching team is to support you in ETC5521 material.
+* It's essential in this course that you have a [GitHub](https://github.com/) account. It is free to register.
+
+---
+# GitHub Classroom
+
+We are going to use GitHub Classroom (etc5521 2023: Exploratory Data Analysis) to  distribute assignment templates and keep track of your assignment progress. 
+
+1. Clone the test assignment by clicking on the link given in Moodle in the first tutorial.
+2. Once you have accepted it .font_small[(note: some browsers do not work well with GitHub Classroom (so use Chrome or Firefox)], you can find your repo here:
+&lt;center&gt;
+&lt;a href="https://classroom.github.com/classrooms/140034520-etc5521-2023-exploratory-data-analysis"&gt;https://classroom.github.com/classrooms/140034520-etc5521-2023-exploratory-data-analysis&lt;/a&gt;
+&lt;/center&gt;
+3. If you don't recall how to connect this repo locally, check [this guide](https://github.com/jfiksel/github-classroom-for-students).
+4. In the first tutorial you will be expected to upload a file to your repo. We will check to make sure you have demonstrated abaility to use GitHub.
+
+---
+
+class: nostripheader middle
+
+# Questions?
+
+---
+
+
+
+
+background-size: cover
+class: title-slide
+background-image: url("images/bg-12.png")
+
+&lt;a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"&gt;&lt;img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /&gt;&lt;/a&gt;&lt;br /&gt;This work is licensed under a &lt;a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"&gt;Creative Commons Attribution-ShareAlike 4.0 International License&lt;/a&gt;.
+
+
+.bottom_abs.width100[
+
+Lecturer: *Di Cook*
+
+
+
+&lt;i class="fas fa-envelope"&gt;&lt;/i&gt;  ETC5521.Clayton-x@monash.edu
+
+&lt;i class="fas fa-calendar-alt"&gt;&lt;/i&gt; Week 1 - Session 0
+
+&lt;br&gt;
+
+]
+
+
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="lib/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "magula",
+"highlightLanguage": "r",
+"highlightLines": true,
+"highlightSpans": false,
+"countIncrementalSlides": false,
+"slideNumberFormat": "%current%/%total%",
+"navigation": {
+"scroll": false,
+"touch": true,
+"click": false
+},
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'lib/mathjax-local/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

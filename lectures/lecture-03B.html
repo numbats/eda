@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>ETC5521: Exploratory Data Analysis</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Di Cook" />
+    <script src="lib/header-attrs-2.22/header-attrs.js"></script>
+    <link href="lib/remark-css-0.0.1/ninjutsu.css" rel="stylesheet" />
+    <link rel="stylesheet" href="assets/font-awesome-all.css" type="text/css" />
+    <link rel="stylesheet" href="assets/tachyons-addon.css" type="text/css" />
+    <link rel="stylesheet" href="assets/animate.css" type="text/css" />
+    <link rel="stylesheet" href="assets/fira-code.css" type="text/css" />
+    <link rel="stylesheet" href="assets/boxes.css" type="text/css" />
+    <link rel="stylesheet" href="assets/table.css" type="text/css" />
+    <link rel="stylesheet" href="assets/styles.css" type="text/css" />
+    <link rel="stylesheet" href="assets/monash-brand.css" type="text/css" />
+    <link rel="stylesheet" href="assets/monash-fonts.css" type="text/css" />
+    <link rel="stylesheet" href="assets/slide-types.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+
+
+
+
+class: middle center hide-slide-number monash-bg-gray80
+
+
+
+
+
+.info-box.w-50.bg-white[
+These slides are viewed best by Chrome or Firefox and occasionally need to be refreshed if elements did not load properly. See &lt;a href=lecture-03B.pdf&gt;here for the PDF &lt;i class="fas fa-file-pdf"&gt;&lt;/i&gt;&lt;/a&gt;. 
+]
+
+&lt;br&gt;
+
+.white[Press the **right arrow** to progress to the next slide!]
+
+
+
+---
+
+class: title-slide
+count: false
+background-image: url("images/bg-12.png")
+
+# .monash-blue[ETC5521: Exploratory Data Analysis]
+
+&lt;h1 class="monash-blue" style="font-size: 30pt!important;"&gt;&lt;/h1&gt;
+
+&lt;br&gt;
+
+&lt;h2 style="font-weight:900!important;"&gt;Initial data analysis and model diagnostics&lt;/h2&gt;
+
+.bottom_abs.width100[
+
+Lecturer: *Di Cook*
+
+
+
+&lt;i class="fas fa-envelope"&gt;&lt;/i&gt;  ETC5521.Clayton-x@monash.edu
+
+&lt;i class="fas fa-calendar-alt"&gt;&lt;/i&gt; Week 3 - Session 2
+
+&lt;br&gt;
+
+]
+
+
+
+---
+# .circle.bg-black.white[2] Hypothesis Testing and Predictive Modeling.f4[Part 3/3]
+
+.w-60[
+- Hypothesis testing: usually make assumptions about the distribution of the data, and are formed relative to a parameter.
+- Predictive modeling: form of the relationship, distribution of the errors. 
+]
+
+---
+
+# Hypothesis testing in R .f4[REVIEW] .f5[Part 1/3]
+
+.w-90[
+- State the hypothesis (pair), e.g. `\(H_o: \mu_1 = \mu_2\)` vs `\(H_a: \mu_1 &lt; \mu_2\)`. 
+- Test statistic depends on _assumption_ about the distribution, e.g. 
+    - `\(t\)`-test will assume that distributions are _normal_, or small departures from if we have a large sample. 
+    - two-sample might assume both groups have the _same variance_ 
+- Steps to complete: 
+    - Compute the test statistic
+    - Measure it against a standard distribution
+    - If it is extreme, `\(p\)`-value is small, decision is to reject `\(H_o\)`
+    - `\(p\)`-value is the probability of observing a value as large as this, or large, assuming `\(H_o\)` is true.
+]
+
+---
+# .blue[Example] .circle.bg-blue.white[1] Checking variance and distribution assumption .f4[Part 1/2]
+
+.pull-left[
+.f4[
+
+```r
+data(sleep)
+ggplot(sleep, aes(x=group, y=extra)) + 
+  geom_boxplot() +
+  geom_point(colour="orange")
+```
+
+&lt;img src="images/lecture-03B/sleep-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+]
+]
+.pull-right[
+
+```r
+ggplot(sleep, aes(x=extra)) + 
+  geom_density(fill="orange", colour="orange", alpha=0.6) + 
+  geom_rug(outside = TRUE, colour="orange") +
+  coord_cartesian(clip = "off") +
+  facet_wrap(~group)
+```
+
+&lt;img src="images/lecture-03B/unnamed-chunk-3-1.png" width="90%" style="display: block; margin: auto;" /&gt;
+]
+.footnote[Cushny, A. R. and Peebles, A. R. (1905) The action of optical isomers: II hyoscines. The Journal of Physiology 32, 501–510.]
+
+---
+# .blue[Example] .circle.bg-blue.white[1] Hypothesis test .f4[Part 2/2]
+
+.pull-left[
+
+```r
+tt &lt;- with(sleep,
+     t.test(extra[group == 1],
+            extra[group == 2], 
+            paired = TRUE))
+```
+
+
+```r
+tt$estimate
+```
+
+```
+## mean difference 
+##           -1.58
+```
+
+
+```r
+tt$null.value
+```
+
+```
+## mean difference 
+##               0
+```
+]
+
+.pull-right[
+
+```r
+tt$statistic
+```
+
+        t 
+-4.062128 
+
+
+```r
+tt$p.value
+```
+
+[1] 0.00283289
+
+
+```r
+tt$conf.int
+```
+
+[1] -2.4598858 -0.7001142
+attr(,"conf.level")
+[1] 0.95
+]
+.footnote[Cushny, A. R. and Peebles, A. R. (1905) The action of optical isomers: II hyoscines. The Journal of Physiology 32, 501–510.]
+
+---
+# .blue[Example] .circle.bg-blue.white[2] Checking distribution assumption 
+
+.pull-left[
+
+```r
+InsectSprays %&gt;% 
+  ggplot(aes(x=fct_reorder(spray, count), 
+             y=count)) + 
+  geom_jitter(width=0.1, height=0, colour="orange", size=3, alpha=0.8) +
+  xlab("") 
+```
+
+&lt;img src="images/lecture-03B/unnamed-chunk-10-1.png" width="432" style="display: block; margin: auto;" /&gt;
+
+.f4[Can you see any violations of normality? Or equal variance?]
+
+]
+
+.pull-right[
+
+
+```r
+fm1 &lt;- aov(count ~ spray, data = InsectSprays)
+summary(fm1)
+```
+
+```
+##             Df Sum Sq Mean Sq F value Pr(&gt;F)    
+## spray        5   2669   533.8    34.7 &lt;2e-16 ***
+## Residuals   66   1015    15.4                   
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+```
+
+.f4[Write down the hypothesis being tested. What would the decision be?]
+]
+
+---
+
+
+# Linear models in R .f4[REVIEW] .f5[Part 1/3]
+
+.f4[
+
+```r
+library(tidyverse)
+library(broom)
+glimpse(cars)
+```
+
+```
+## Rows: 50
+## Columns: 2
+## $ speed &lt;dbl&gt; 4, 4, 7, 7, 8, 9, 10, 10, 10, 11, 11, 12, 12, 12, 12, 13, 13, 13, 13, 14, 14, 14, 14, 15, 15, 15, 16, 16, 17, 17, 17, 18, 18, 18, 18, 19, 19, 19, 20, 20, 20, 20, 20, 22, 23, 24, 24, 24…
+## $ dist  &lt;dbl&gt; 2, 10, 4, 22, 16, 10, 18, 26, 34, 17, 28, 14, 20, 24, 28, 26, 34, 34, 46, 26, 36, 60, 80, 20, 26, 54, 32, 40, 32, 40, 50, 42, 56, 76, 84, 36, 46, 68, 32, 48, 52, 56, 64, 66, 54, 70, 92…
+```
+]
+--
+
+.f4[
+
+```r
+ggplot(cars, aes(speed, dist)) + 
+  geom_point() + 
+  geom_smooth(method = "lm", se = FALSE)
+```
+
+&lt;img src="images/lecture-03B/plot-cars-1.png" width="432" style="display: block; margin: auto;" /&gt;
+]
+
+
+---
+
+# Linear models in R .f4[REVIEW] .f5[Part 2/3]
+
+* We can fit linear models in R with the `lm` function:
+```r
+lm(dist ~ speed, data = cars)
+```
+is the same as
+```r
+lm(dist ~ 1 + speed, data = cars)
+```
+
+--
+
+* The above model is mathematically written as 
+`$$y_i = \beta_0 + \beta_1 x_i + e_i$$`
+where &lt;ul&gt;
+&lt;li&gt;\\(y_i\\) and \\(x_i\\) are the  stopping distance (in ft) and speed (in mph), respectively, of the \\(i\\)-th car;&lt;/li&gt; &lt;li&gt;\\(\beta_0\\) and \\(\beta_1\\) are intercept and slope, respectively; and&lt;/li&gt;
+&lt;li&gt;\\(e_i\\) is the random error; usually assuming \\(e_i \sim NID(0, \sigma^2)\\). &lt;/li&gt;
+&lt;/ul&gt;
+
+
+---
+
+# Linear models in R .f4[REVIEW] .f5[Part 3/3]
+
+.flex[
+.w-20[
+&lt;img src="images/lecture-03B/plot-cars-1.png" width="216" style="display: block; margin: auto auto auto 0;" /&gt;
+
+]
+.w-80[
+
+```r
+fit &lt;- lm(dist ~ 1 + speed, data = cars)
+tidy(fit)
+```
+
+```
+## # A tibble: 2 × 5
+##   term        estimate std.error statistic  p.value
+##   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+## 1 (Intercept)   -17.6      6.76      -2.60 1.23e- 2
+## 2 speed           3.93     0.416      9.46 1.49e-12
+```
+
+```r
+glance(fit)
+```
+
+```
+## # A tibble: 1 × 12
+##   r.squared adj.r.squared sigma statistic  p.value    df logLik   AIC   BIC deviance df.residual  nobs
+##       &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;       &lt;int&gt; &lt;int&gt;
+## 1     0.651         0.644  15.4      89.6 1.49e-12     1  -207.  419.  425.   11354.          48    50
+```
+]
+
+]
+
+
+
+
+--
+
+.w-80[
+* *Assuming* this model is appropriate, .monash-blue[the stopping distance increases by about 4 ft for increase in speed by 1 mph.]
+]
+
+
+---
+
+count: false
+
+# .circle.bg-black.white[2] Model form .f4[Part 1/2]
+
+.w-60[
+* Say, we are interested in characterising the price of the diamond in terms of its carat.
+&lt;img src="images/lecture-03B/plot-diamonds-1.png" width="432" style="display: block; margin: auto;" /&gt;
+* Looking at this plot, would you fit a linear model with formula
+
+.center[
+`price ~ 1 + carat`?
+]
+
+]
+
+---
+
+# .circle.bg-black.white[2] Model form .f4[Part 1/2]
+
+.w-60[
+* Say, we are interested in characterising the price of the diamond in terms of its carat.
+&lt;img src="images/lecture-03B/plot-diamonds-lm-1.png" width="432" style="display: block; margin: auto;" /&gt;
+* Looking at this plot, would you fit a linear model with formula
+
+.center[
+`price ~ 1 + carat`?
+]
+
+]
+
+---
+
+# .circle.bg-black.white[2] Model form .f4[Part 2/2]
+
+.flex[
+.w-50[
+&lt;img src="images/lecture-03B/plot-diamonds-lm2-1.png" width="432" style="display: block; margin: auto;" /&gt;
+]
+.w-50[
+* What about
+&lt;center&gt;
+&lt;code style="color: orange"&gt;price ~ poly(carat, 2)&lt;/code&gt;?
+&lt;/center&gt;
+which is the same as fitting:
+
+`$$y_i = \beta_0 + \beta_1 x_i + \beta_2 x_i^2 + e_i.$$`
+
+{{content}}
+]
+]
+
+
+--
+
+* Should the assumption for error distribution be modified if so?
+{{content}}
+--
+
+
+* Should we make some transformation before modelling?
+{{content}}
+--
+
+
+
+* Are there other candidate models?
+
+
+---
+
+# .circle.bg-black.white[2] Model form .f4[Part 2/2]
+
+* Notice that there was _**no formal statistical inference**_ when trying to determine an appropriate model form.
+--
+
+
+* The goal of the main analysis is to characterise the price of a diamond by its carat. This may involve:
+   * formal inference for model selection;
+   * justification of the selected "final" model; and
+   * fitting the final model.
+--
+
+
+* There may be in fact many, many models considered but discarded at the IDA stage. 
+--
+
+
+* These discarded models are hardly ever reported. Consequently, majority of reported statistics give a distorted view and it's important to remind yourself what might _**not**_ be reported.
+
+
+---
+
+# Model selection
+
+
+.blockquote.w-70[
+All models are _approximate_ and _tentative_; approximate in the sense that no model is exactly true and tentative in that they may be modified in the light of further data
+
+.pull-right[&amp;mdash;Chatfield (1985)] 
+
+]
+
+&lt;br&gt;&lt;br&gt;
+
+--
+
+.blockquote[
+All models are wrong but some are useful
+
+.pull-right[&amp;mdash;George Box]
+
+]
+
+---
+class: transition
+
+# Model diagnostics
+
+---
+# Residuals .f4[1/2]
+
+.flex[
+.w-70[
+&lt;img src="images/lecture-03B/plot-diamonds-resid-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+]
+.w-30[
+&lt;br&gt;
+
+Residual = Observed - Fitted
+
+&lt;br&gt;&lt;br&gt;
+Residual plot: Plot the residual against explanatory variable (or Fitted value)
+
+.monash-orange2[Best] residual plot has not .monash-orange2[obvious pattern].
+]
+]
+
+---
+# Alternative approach: linearise relationship
+
+.flex[
+.w-50[
+&lt;img src="images/lecture-03B/plot-diamonds-lm3-1.png" width="432" style="display: block; margin: auto;" /&gt;
+]
+.w-50[
+&lt;img src="images/lecture-03B/plot-diamonds-lm4-1.png" width="432" style="display: block; margin: auto;" /&gt;
+]]
+
+The .monash-orange2[log transformation of both variables] linearises the relationship, so that a simple linear model can be used, and also corrects the heteroskedasticity. 
+
+---
+# Residuals .f4[2/2]
+
+.flex[
+.w-70[
+&lt;img src="images/lecture-03B/plot-diamonds-resid2-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+]
+.w-30[
+&lt;br&gt;
+
+Which has the best residual plot? 
+
+]
+]
+
+
+---
+
+class: middle center
+
+.blockquote[
+"Teaching of Statistics should provide a more balanced blend of IDA and inference"
+
+.pull-right[Chatfield (1985)]
+]
+
+
+--
+
+&lt;br&gt;&lt;br&gt;
+
+Yet there is still very little emphasis of it in teaching and also at times in practice.
+
+--
+
+&lt;br&gt;
+
+So don't forget to do IDA!
+
+---
+
+# Take away messages
+
+.flex[
+.w-90.f2[
+
+
+
+&lt;ul class="fa-ul"&gt;
+{{content}}
+&lt;/ul&gt;
+
+
+]
+]
+
+--
+
+  &lt;li&gt;&lt;span class="fa-li"&gt;&lt;i class="fas fa-paper-plane"&gt;&lt;/i&gt;&lt;/span&gt;&lt;b&gt;&lt;i&gt;Initial data analysis&lt;/i&gt;&lt;/b&gt; (IDA) is a model-focused exploration to support a confirmatory analysis with:
+  &lt;ul&gt;
+  &lt;li&gt;&lt;b&gt;&lt;i&gt; data description and collection&lt;/i&gt;&lt;/b&gt; &lt;/li&gt;
+  &lt;li&gt;&lt;b&gt;&lt;i&gt; data quality checking, and&lt;/i&gt;&lt;/b&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;b&gt;&lt;i&gt; checking assumptions&lt;/i&gt;&lt;/b&gt; &lt;/li&gt;
+  &lt;li&gt;&lt;b&gt;&lt;i&gt; model fit&lt;/i&gt;&lt;/b&gt; without any formal statistical inference.&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/li&gt;
+
+{{content}}
+
+--
+
+&lt;li&gt;&lt;span class="fa-li"&gt;&lt;i class="fas fa-paper-plane"&gt;&lt;/i&gt;&lt;/span&gt;IDA may never see the limelight BUT it forms the foundation that the main analysis is built upon. Do it well!&lt;/li&gt;
+
+
+---
+
+
+
+
+background-size: cover
+class: title-slide
+background-image: url("images/bg-12.png")
+
+&lt;a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"&gt;&lt;img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /&gt;&lt;/a&gt;&lt;br /&gt;This work is licensed under a &lt;a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"&gt;Creative Commons Attribution-ShareAlike 4.0 International License&lt;/a&gt;.
+
+
+.bottom_abs.width100[
+
+Lecturer: *Di Cook*
+
+
+
+&lt;i class="fas fa-envelope"&gt;&lt;/i&gt;  ETC5521.Clayton-x@monash.edu
+
+&lt;i class="fas fa-calendar-alt"&gt;&lt;/i&gt; Week 3 - Session 2
+
+&lt;br&gt;
+
+]
+
+
+
+
+
+&lt;br&gt;&lt;br&gt;Lecture materials originally developed by Dr Emi Tanaka
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="lib/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "magula",
+"highlightLanguage": "r",
+"highlightLines": true,
+"highlightSpans": false,
+"countIncrementalSlides": false,
+"slideNumberFormat": "%current%/%total%",
+"navigation": {
+"scroll": false,
+"touch": true,
+"click": false
+},
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'lib/mathjax-local/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
